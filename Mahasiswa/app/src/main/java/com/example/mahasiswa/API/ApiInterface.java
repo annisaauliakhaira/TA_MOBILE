@@ -21,4 +21,7 @@ public interface ApiInterface {
     @POST("student/examschedule")
     Call<ResponseBody>getExamschedule(@Header("Authorization") String authToken);
 
+    @POST("student/details")
+    Call<ResponseBody>getDetail(@Header("Authorization") String authToken);
+
 }

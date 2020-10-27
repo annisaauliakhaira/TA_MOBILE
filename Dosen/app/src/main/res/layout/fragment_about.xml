@@ -47,7 +47,7 @@
             android:layout_height="15dp"/>
 
         <TextView
-            android:id="@+id/tv_name"
+            android:id="@+id/tv_name1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="text Husnil Kamil, M.T"
@@ -55,7 +55,7 @@
             android:layout_gravity="center"/>
 
         <TextView
-            android:id="@+id/tv_nip"
+            android:id="@+id/tv_nip1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
@@ -99,25 +99,6 @@
             android:layout_width="wrap_content"
             android:layout_height="15dp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="30dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/phone"/>
-
-            <TextView
-                android:id="@+id/tv_phone"
-                android:paddingLeft="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="082267672621"/>
-
-        </LinearLayout>
 
     </LinearLayout>
 

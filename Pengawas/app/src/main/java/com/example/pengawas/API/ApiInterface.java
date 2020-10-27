@@ -20,4 +20,7 @@ public interface ApiInterface {
 
     @POST("staff/examschedule")
     Call<ResponseBody>getExamSchedule(@Header("Authorization") String authToken);
+
+    @POST("staff/details")
+    Call<ResponseBody>getDetail(@Header("Authorization") String authToken);
 }
