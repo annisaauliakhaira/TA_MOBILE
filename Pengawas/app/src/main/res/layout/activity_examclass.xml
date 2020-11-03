@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#badbeb"
+    tools:context=".ExamclassActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.3"
+        android:padding="15dp"
+        android:background="#1380ae">
+
+        <TextView
+            android:id="@+id/tv_className"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Basis Data Lanjut"
+            android:textSize="25dp"
+            android:textColor="#dbdef5"
+            android:textStyle="bold"
+            android:fontFamily="serif"/>
+        <TextView
+            android:id="@+id/tv_classCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="A303"
+            android:textSize="16dp"
+            android:textColor="#dbdef5"
+            android:fontFamily="serif"/>
+        <TextView
+            android:id="@+id/tv_lectuerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="text Husnil Kamil, M.T"
+            android:textSize="16dp"
+            android:fontFamily="serif"
+            android:textColor="#dbdef5"/>
+        <TextView
+            android:id="@+id/tv_dateDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="25-08-2020"
+            android:textSize="16dp"
+            android:textColor="#dbdef5"
+            android:fontFamily="serif"/>
+        <TextView
+            android:id="@+id/tv_timeDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="08.00 - 09.30"
+            android:textColor="#dbdef5"
+            android:textSize="16dp"
+            android:fontFamily="serif"/>
+        <TextView
+            android:id="@+id/tv_roomDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="H.1.2"
+            android:textColor="#dbdef5"
+            android:textSize="16dp"
+            android:fontFamily="serif"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="0.5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#badbeb">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_student"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_row_student"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_scan"
+        android:layout_gravity="center"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#badbeb"
+        android:src="@drawable/scan"/>
+
+</LinearLayout>

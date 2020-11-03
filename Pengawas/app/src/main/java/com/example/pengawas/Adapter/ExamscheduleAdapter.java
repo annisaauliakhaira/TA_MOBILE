@@ -8,19 +8,52 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pengawas.Examschedule;
 import com.example.pengawas.R;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ExamscheduleAdapter extends RecyclerView.Adapter<ExamscheduleAdapter.MyViewHolder> {
-    private final ArrayList<Examschedule> mData = new ArrayList<>();
+    private JSONArray mData = new JSONArray();
+    public OnItemClickListener listener;
 
-    public void setData(ArrayList<Examschedule> item){
-        mData.clear();
-        mData.addAll(item);
+    public ExamscheduleAdapter(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void setData(JSONArray items){
+        mData = items;
         notifyDataSetChanged();
     }
+
+
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View mView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_row_exam, viewGroup, false);
+        return new MyViewHolder(mView);
+    }
+
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        try {
+            holder.tv_class.setText(mData.getJSONObject(position).getJSONObject("class").getString("name"));
+            holder.tv_date.setText(mData.getJSONObject(position).getString("date"));
+            holder.tv_time.setText(mData.getJSONObject(position).getString("start_hour")+" - "+mData.getJSONObject(position).getString("ending_hour"));
+            holder.tv_room.setText(mData.getJSONObject(position).getString("room"));
+            holder.bind(mData.getJSONObject(position), listener);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return mData.length();
+    }
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_class;
@@ -35,28 +68,22 @@ public class ExamscheduleAdapter extends RecyclerView.Adapter<ExamscheduleAdapte
             tv_time = (TextView) itemView.findViewById(R.id.tv_time);
             tv_room = (TextView) itemView.findViewById(R.id.tv_room);
         }
+
+        public void bind(JSONObject item, OnItemClickListener l) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        listener.onItemClick(item);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
-    @NonNull
-    @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View mView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_row_exam, viewGroup, false);
-        return new MyViewHolder(mView);
+    public interface OnItemClickListener{
+        void onItemClick(JSONObject item) throws JSONException;
     }
-
-
-    @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tv_class.setText(mData.get(position).getClasses());
-        holder.tv_date.setText(mData.get(position).getDate());
-        holder.tv_time.setText(mData.get(position).getTime());
-        holder.tv_room.setText(mData.get(position).getRoom());
-    }
-
-    @Override
-    public int getItemCount() {
-        return mData.size();
-    }
-
-
 }

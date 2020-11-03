@@ -6,6 +6,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface ApiInterface {
 
@@ -23,4 +24,8 @@ public interface ApiInterface {
 
     @POST("lecturer/details")
     Call<ResponseBody> getDetail(@Header("Authorization") String authToken);
+
+    @POST("lecturer/examclass/{id}")
+    Call<ResponseBody>getDetailKelas(@Header("Authorization") String authToken, @Path("id") String examclass_id);
+
 }

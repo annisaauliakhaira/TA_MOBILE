@@ -20,23 +20,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ExamViewModel extends ViewModel {
+public class ClassstudentViewModel extends ViewModel {
+    private ApiInterface apiInterface;
+    private MutableLiveData<JSONArray> listStudent = new MutableLiveData<>();
 
-    ApiInterface apiInterface;
-    private MutableLiveData<JSONArray> listExamschedule = new MutableLiveData<>();
 
-    public void setExamschedule(String token){
+
+    public void setStudentclass(String token, String id){
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseBody> examScheduleCall = apiInterface.getExamschedule(token);
-        examScheduleCall.enqueue(new Callback<ResponseBody>() {
+        Call<ResponseBody> studentCall = apiInterface.getDetailKelas(token, id);
+        studentCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
                     JSONObject jsonRESULTS = null;
                     try {
                         jsonRESULTS = new JSONObject(response.body().string());
-                        JSONArray examschedules = jsonRESULTS.getJSONArray("data");
-                        listExamschedule.postValue(examschedules);
+                        JSONArray studentclasses = jsonRESULTS.getJSONArray("data");
+                        listStudent.postValue(studentclasses);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -47,12 +48,10 @@ public class ExamViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("eror view model",t.getMessage());
+
             }
         });
     }
 
-    public LiveData<JSONArray> getExamschedule(){
-        return listExamschedule;
-    }
+    public LiveData<JSONArray> getStudentClass(){ return listStudent; }
 }
