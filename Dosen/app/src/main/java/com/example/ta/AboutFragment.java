@@ -42,6 +42,7 @@ public class AboutFragment extends Fragment {
         tv_email = v.findViewById(R.id.tv_email);
 
         sessionManager = new SessionManager(getContext());
+        sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
 
@@ -54,7 +55,6 @@ public class AboutFragment extends Fragment {
                     tv_name.setText(stringStringHashMap.get(aboutViewModel.NAME));
                     tv_nip.setText("NIP. "+ stringStringHashMap.get(aboutViewModel.NIP));
                     tv_email.setText(stringStringHashMap.get(aboutViewModel.EMAIL));
-
                 }
             }
         });

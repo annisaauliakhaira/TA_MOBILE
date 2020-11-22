@@ -22,8 +22,6 @@ public class ExamclassAdapter extends RecyclerView.Adapter<ExamclassAdapter.MyVi
         this.listener = listener;
     }
 
-
-
     public void setData(JSONArray itemExam){
         mData=itemExam;
         notifyDataSetChanged();

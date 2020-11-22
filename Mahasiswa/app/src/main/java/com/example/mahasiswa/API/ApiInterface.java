@@ -18,6 +18,9 @@ public interface ApiInterface {
     @POST("student/logout")
     Call<ResponseBody>logout(@Header("Authorization") String authToken);
 
+    @POST("student/isLogin")
+    Call<ResponseBody>isLogin(@Header("Authorization") String authToken);
+
     @POST("student/examschedule")
     Call<ResponseBody>getExamschedule(@Header("Authorization") String authToken);
 

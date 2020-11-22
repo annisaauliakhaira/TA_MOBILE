@@ -1,18 +1,27 @@
 package com.example.ta.API;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
+
+import com.example.ta.LoginActivity;
 
 import java.util.HashMap;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SessionManager {
     private Context _context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    public static final String IS_LOGGED_IN = "IsLoggedIn";
+    public static final String IS_LOGIN = "IsLogin";
     public static final String TOKEN = "token";
     public static final String NAME = "name";
     public static final String NIP = "nip";
@@ -25,7 +34,7 @@ public class SessionManager {
 
     //membuat session
     public void createLoginSession(String token, String name, String nip){
-        editor.putBoolean(IS_LOGGED_IN, true);
+        editor.putBoolean(IS_LOGIN, true);
         editor.putString(TOKEN, "Bearer "+token);
         editor.putString(NAME, name);
         editor.putString(NIP, nip);
@@ -47,7 +56,32 @@ public class SessionManager {
         editor.commit();
     }
 
-    public boolean isLoggedIn(){
-        return sharedPreferences.getBoolean(IS_LOGGED_IN, false);
+    public boolean checkToken(){
+
+        return sharedPreferences.getBoolean(IS_LOGIN, false);
+    }
+
+    public void isLogin(){
+        String token = sharedPreferences.getString(TOKEN, null);
+        if (token.equals("")) {
+            final HashMap<String, String> about_ = new HashMap<>();
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<ResponseBody> isLoginCall = apiInterface.isLogin(token);
+            isLoginCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.code()!=200){
+                        Intent intent = new Intent(_context, LoginActivity.class);
+                        logoutSession();
+                        _context.startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.e("isLogin", t.getMessage());
+                }
+            });
+        }
     }
 }

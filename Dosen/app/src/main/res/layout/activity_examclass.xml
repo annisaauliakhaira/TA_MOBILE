@@ -92,12 +92,31 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iv_scan"
-        android:layout_gravity="center"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="#badbeb"
-        android:src="@drawable/scan"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/bt_absen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take Presence"
+            android:backgroundTint="#d67601"
+            android:textColor="#fff"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:drawableStart="@drawable/scan"/>
+        <Button
+            android:id="@+id/bt_berita"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="News Event"
+            android:layout_marginLeft="3dp"
+            android:backgroundTint="#1380ae"
+            android:drawableStart="@drawable/ic_news"
+            android:textColor="#fff"/>
+    </LinearLayout>
+
+
 
 </LinearLayout>

@@ -83,7 +83,6 @@ public class ExamscheduleAdapter extends RecyclerView.Adapter<ExamscheduleAdapte
             });
         }
 
-
     }
 
     public interface OnItemClickListener{

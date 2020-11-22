@@ -52,6 +52,7 @@ public class ExamscheduleFragment extends Fragment {
 
         rv =(RecyclerView) v.findViewById(R.id.rv_exam);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LoadingDialog loadingDialog = new LoadingDialog(getActivity());
 
         ExamscheduleAdapter examAdapter = new ExamscheduleAdapter(new ExamscheduleAdapter.OnItemClickListener() {
 
@@ -59,21 +60,21 @@ public class ExamscheduleFragment extends Fragment {
             public void onItemClick(JSONObject item) throws JSONException {
                 Intent intent = new Intent(getActivity(), ExamclassActivity.class);
                 intent.putExtra("data", item.toString());
-
                 startActivity(intent);
+                loadingDialog.startLoadingDialog();
             }
         });
         examAdapter.notifyDataSetChanged();
         rv.setAdapter(examAdapter);
 
         sessionManager = new SessionManager(getContext());
+        sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
 
         examViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(ExamViewModel.class);
         examViewModel.setExamschedule(token);
         examViewModel.getExamschedule().observe(this, new Observer<JSONArray>() {
-
             @Override
             public void onChanged(JSONArray datas) {
                     examAdapter.setData(datas);

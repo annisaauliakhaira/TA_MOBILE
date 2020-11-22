@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="180dp"
     android:background="#1380ae"
     android:gravity="bottom"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    android:orientation="vertical"
-    tools:context=".nav_header">
+    android:orientation="vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="80dp"
@@ -21,15 +19,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
-        android:text="text Reinaldo Shandev Pratama"
-        android:id="@+id/tv_name"
+        android:text="text Husnil"
+        android:id="@+id/tv_nameDosen"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/tv_nim"
+        android:id="@+id/tv_nipDosen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NIM. 1611522012" />
-
+        android:text="text NIP. 19800423 200902 2 001" />
 
 </LinearLayout>

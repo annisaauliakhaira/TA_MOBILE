@@ -6,16 +6,29 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.example.pengawas.API.SessionManager;
 import com.example.pengawas.Adapter.ExamclassAdapter;
 import com.example.pengawas.ViewModel.ClassstudentViewModel;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,10 +38,11 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class ExamclassActivity extends AppCompatActivity {
-    ImageView iv_scan;
+    private static final int REQUEST_CODE_QR_SCAN = 101;
     private RecyclerView rv_detailclass;
     SessionManager sessionManager;
     private TextView tv_className, tv_classCode, tv_lecturerName, tv_dateDetail, tv_detailTime, tv_roomDetail;
+    Button bt_scan, bt_newsevent;
 
     private ClassstudentViewModel studentViewModel;
 
@@ -45,6 +59,34 @@ public class ExamclassActivity extends AppCompatActivity {
         tv_dateDetail = findViewById(R.id.tv_dateDetail);
         tv_detailTime = findViewById(R.id.tv_timeDetail);
         tv_roomDetail = findViewById(R.id.tv_roomDetail);
+        LoadingDialog loadingDialog = new LoadingDialog(this);
+
+        bt_scan = findViewById(R.id.bt_absen);
+        bt_scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dexter.withContext(getApplicationContext())
+                        .withPermission(Manifest.permission.CAMERA)
+                        .withListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                                Intent intent = new Intent(ExamclassActivity.this, QrCodeActivity.class);
+                                startActivityForResult(intent, REQUEST_CODE_QR_SCAN);
+                            }
+
+                            @Override
+                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                                permissionDeniedResponse.getRequestedPermission();
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+
+                            }
+                        }).check();
+            }
+        });
+
         ExamclassAdapter iAdapter = new ExamclassAdapter(new ExamclassAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(JSONObject item) throws JSONException {
@@ -56,6 +98,7 @@ public class ExamclassActivity extends AppCompatActivity {
         rv_detailclass.setAdapter(iAdapter);
 
         sessionManager = new SessionManager(this);
+        sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
 
@@ -74,6 +117,21 @@ public class ExamclassActivity extends AppCompatActivity {
                 tv_detailTime.setText(classDetail.getString("start_hour")+" - " + classDetail.getString("ending_hour"));
                 tv_roomDetail.setText(classDetail.getString("room"));
 
+                bt_newsevent = findViewById(R.id.bt_berita);
+                bt_newsevent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        switch (v.getId()){
+                            case R.id.bt_berita:
+                                Intent intent = new Intent(ExamclassActivity.this, NewsEventActivity.class);
+                                intent.putExtra("data", id);
+                                startActivity(intent);
+                                loadingDialog.startLoadingDialog();
+
+                        }
+                    }
+                });
+
                 studentViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(ClassstudentViewModel.class);
                 studentViewModel.setStudentClass(token, id);
                 studentViewModel.getStudentClass().observe(this, new Observer<JSONArray>() {
@@ -88,7 +146,49 @@ public class ExamclassActivity extends AppCompatActivity {
 
             }
         }
-        iv_scan = findViewById(R.id.iv_scan);
-        Intent intent = getIntent();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            if (data == null)
+                return;
+            //Getting the passed result
+            String result = data.getStringExtra("com.blikoon.qrcodescanner.error_decoding_image");
+            if (result != null) {
+                AlertDialog alertDialog = new AlertDialog.Builder(ExamclassActivity.this).create();
+                alertDialog.setTitle("Scan Error");
+                alertDialog.setMessage("QR Code could not be scanned");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+            return;
+
+        }
+        if (requestCode == REQUEST_CODE_QR_SCAN) {
+            if (data == null)
+                return;
+            //Getting the passed result
+            String result = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult");
+            AlertDialog alertDialog = new AlertDialog.Builder(ExamclassActivity.this).create();
+            alertDialog.setTitle("Scan result");
+            alertDialog.setMessage(result);
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+
+        }
     }
 }

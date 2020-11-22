@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity {
     EditText et_username, et_password;
     Button bt_login;
     String Username, Password;
@@ -36,22 +36,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        sessionManager = new SessionManager(LoginActivity.this);
+        if (sessionManager.checkToken()){
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         et_username = findViewById(R.id.et_username);
         et_password = findViewById(R.id.et_password);
         bt_login = findViewById(R.id.bt_login);
-        bt_login.setOnClickListener(this);
+        final LoadingDialog loadingDialog = new LoadingDialog(LoginActivity.this);
+        bt_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()){
+                    case R.id.bt_login:
+                        Username = et_username.getText().toString();
+                        Password = et_password.getText().toString();
+                        login(Username, Password);
+                        loadingDialog.startLoadingDialog();
+                    break;
+                }
+            }
+        });
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.bt_login:
-                Username = et_username.getText().toString();
-                Password = et_password.getText().toString();
-                login(Username, Password);
-                break;
-        }
-    }
 
     private void login(String username, String password) {
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -70,7 +80,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             String name = jsonData.getString("name");
                             String nip = jsonData.getString("nip");
 
-                            sessionManager = new SessionManager(LoginActivity.this);
                             sessionManager.createLoginSession(token, name, nip);
 
                             Toast.makeText(LoginActivity.this, name, Toast.LENGTH_SHORT).show();

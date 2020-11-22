@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer =findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        updateNavView();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void logout(){
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         sessionManager = new SessionManager(this);
+        sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
         Call<ResponseBody> logoutCall = apiInterface.logout(token);
@@ -120,5 +124,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void updateNavView(){
+        NavigationView navigationView =findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView nav_Name = headerView.findViewById(R.id.tv_nameMhs);
+        TextView nav_Nim = headerView.findViewById(R.id.tv_nimMhs);
+
+        sessionManager = new SessionManager(this);
+        sessionManager.isLogin();
+        HashMap<String, String>User = sessionManager.getUserDetail();
+        String token = User.get(sessionManager.TOKEN);
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseBody> headerCall = apiInterface.getDetail(token);
+        headerCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                    JSONObject jsonRESULTS = null;
+                    try {
+                        jsonRESULTS = new JSONObject(response.body().string());
+                        JSONObject headers =jsonRESULTS.getJSONObject("data");
+                        nav_Name.setText(headers.getJSONObject("student").getString("name"));
+                        nav_Nim.setText("NIM. "+headers.getJSONObject("student").getString("nim"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Error Data View Model", t.getMessage());
+            }
+        });
     }
 }

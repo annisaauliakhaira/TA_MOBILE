@@ -1,5 +1,6 @@
 package com.example.mahasiswa;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,13 +19,15 @@ import com.example.mahasiswa.API.SessionManager;
 import com.example.mahasiswa.Adapter.ExamscheduleAdapter;
 import com.example.mahasiswa.ViewModel.ExamViewModel;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 public class ExamscheduleFragment extends Fragment {
     View v;
     private RecyclerView rv;
-    private ArrayList<ExamSchedule> examscheduleList;
     private ExamViewModel examViewModel;
     SessionManager sessionManager;
 
@@ -51,24 +54,28 @@ public class ExamscheduleFragment extends Fragment {
         rv =(RecyclerView) v.findViewById(R.id.rv_exam);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        final ExamscheduleAdapter examAdapter = new ExamscheduleAdapter();
+        ExamscheduleAdapter examAdapter = new ExamscheduleAdapter(new ExamscheduleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(JSONObject item) throws JSONException {
+                Intent intent = new Intent(getActivity(), ExamcardActivity.class);
+                intent.putExtra("data", item.toString());
+                startActivity(intent);
+            }
+        });
         examAdapter.notifyDataSetChanged();
         rv.setAdapter(examAdapter);
-        examscheduleList = new ArrayList<>();
 
         sessionManager = new SessionManager(getContext());
+        sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
 
         examViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(ExamViewModel.class);
         examViewModel.setExamschedule(token);
-        examViewModel.getExamschedule().observe(this, new Observer<ArrayList<ExamSchedule>>() {
+        examViewModel.getExamschedule().observe(this, new Observer<JSONArray>() {
             @Override
-            public void onChanged(ArrayList<ExamSchedule> examSchedules) {
-                if (examSchedules != null){
-                    Log.e("COba", examSchedules.toString());
-                    examAdapter.setData(examSchedules);
-                }
+            public void onChanged(JSONArray datas) {
+                examAdapter.setData(datas);
             }
         });
     }

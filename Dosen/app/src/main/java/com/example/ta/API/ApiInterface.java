@@ -19,6 +19,9 @@ public interface ApiInterface {
     @POST("lecturer/logout")
     Call<ResponseBody>logout(@Header("Authorization") String authToken);
 
+    @POST("lecturer/isLogin")
+    Call<ResponseBody>isLogin(@Header("Authorization") String authToken);
+
     @POST("lecturer/examschedule")
     Call<ResponseBody> getExamschedule(@Header("Authorization") String authToken);
 
@@ -27,5 +30,8 @@ public interface ApiInterface {
 
     @POST("lecturer/examclass/{id}")
     Call<ResponseBody>getDetailKelas(@Header("Authorization") String authToken, @Path("id") String examclass_id);
+
+    @POST("lecturer/show/{id}")
+    Call<ResponseBody>getNewsEvent(@Header("Authorization") String authToken, @Path("id") String news_id);
 
 }
