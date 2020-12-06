@@ -63,6 +63,7 @@ public class ExamscheduleFragment extends Fragment {
                 startActivity(intent);
                 loadingDialog.startLoadingDialog();
             }
+
         });
         examAdapter.notifyDataSetChanged();
         rv.setAdapter(examAdapter);

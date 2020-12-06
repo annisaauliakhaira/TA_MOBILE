@@ -42,13 +42,14 @@ public class ExamclassAdapter extends RecyclerView.Adapter<ExamclassAdapter.MyVi
             String presence_status = mData.getJSONObject(position).getString("presence_status");
             String keterangan = "Status Not Found";
             if (presence_status.equals("0")){
-                keterangan = "Belum Ujian";
+                keterangan = "Absence";
             }else if (presence_status.equals("1")){
-                keterangan = "Sudah Ujian";
+                keterangan = "Presence";
             }else if (presence_status.equals("2")){
-                keterangan = "Tidak Ujian";
+                keterangan = "Permit";
             }
             holder.tv_presence.setText(keterangan);
+            holder.bind(mData.getJSONObject(position), listener);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -70,6 +71,21 @@ public class ExamclassAdapter extends RecyclerView.Adapter<ExamclassAdapter.MyVi
             tv_studentName = (TextView) itemView.findViewById(R.id.tv_studentName);
             tv_presence = (TextView) itemView.findViewById(R.id.tv_presence);
 
+
+
+        }
+
+        public void bind(JSONObject item, OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        listener.onItemClick(item);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 

@@ -31,6 +31,30 @@ public interface ApiInterface {
     @POST("staff/examclass/{id}")
     Call<ResponseBody>getDetailClass(@Header("Authorization") String authToken, @Path("id") String examclass_id);
 
+    @FormUrlEncoded
+    @POST("staff/saveNews/{exam_id}")
+    Call<ResponseBody>getNewsData(
+            @Field("news_event") String news_event,
+            @Header("Authorization") String authToken,
+            @Path("exam_id") String exam_id);
+
     @POST("staff/show/{id}")
     Call<ResponseBody>getNewsEvent(@Header("Authorization") String authToken, @Path("id") String news_id);
+
+    @FormUrlEncoded
+    @POST("staff/update/{id}")
+    Call<ResponseBody>getUpdateNews(
+            @Field("news_event") String news_event,
+            @Header("Authorization") String authToken,
+            @Path("id") String news_id);
+
+    @POST("staff/delete/{id}")
+    Call<ResponseBody>getDeleteNews(@Header("Authorization") String authToken, @Path("id") String news_id);
+
+    @FormUrlEncoded
+    @POST("staff/presence")
+    Call<ResponseBody>getPresence(@Header("Authorization") String authToken, @Path("code") String code);
+
+    @POST("staff/updateManual/{id}/{presence_status}")
+    Call<ResponseBody>UpdateManual(@Header("Authorization") String authToken, @Path("id") String id, @Path("presence_status") String presence_status);
 }

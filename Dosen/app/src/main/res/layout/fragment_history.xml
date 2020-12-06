@@ -1,122 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"
-    android:padding="40dp"
-    android:background="#467087">
+    android:background="#badbeb"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_history"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="PROFILE"
-        android:textColor="#fff"
-        android:textSize="30dp"
-        android:fontFamily="serif-monospace"
-        android:gravity="top"
-        tools:ignore="RtlCompat" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_row_history" />
 
-    <LinearLayout
-        android:layout_width="309dp"
-        android:layout_height="364dp"
-        android:layout_gravity="center"
-        android:background="#71ccf3"
-        android:orientation="vertical">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="233dp"
-        android:layout_height="438dp"
-        android:layout_gravity="center"
-        android:background="#ffffff"
-        android:orientation="vertical"
-        android:paddingTop="50dp">
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/dosen"
-            android:layout_gravity="center"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="15dp"/>
-
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Husnil Kamil, M.T"
-            android:textStyle="bold"
-            android:layout_gravity="center"/>
-
-        <TextView
-            android:id="@+id/tv_nip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="NIP.198804232009022001"
-            android:textStyle="bold" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="#26627f"/>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="30dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/mail" />
-            <TextView
-                android:id="@+id/tv_email"
-                android:paddingLeft="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="husnilk@fiti.unand.ac.id"/>
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="15dp"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="30dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/phone"/>
-
-            <TextView
-                android:id="@+id/tv_phone"
-                android:paddingLeft="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="082267672621"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</FrameLayout>
+</RelativeLayout>

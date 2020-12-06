@@ -1,5 +1,6 @@
 package com.example.pengawas.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class NewseventAdapter extends RecyclerView.Adapter<NewseventAdapter.MyVi
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         try {
             holder.tv_newsEvent.setText(mData.getJSONObject(position).getString("news_event"));
+            holder.bind(mData.getJSONObject(position), listener);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -53,6 +55,19 @@ public class NewseventAdapter extends RecyclerView.Adapter<NewseventAdapter.MyVi
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_newsEvent = (TextView) itemView.findViewById(R.id.tv_newsData);
+        }
+
+        public void bind(JSONObject item, OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        listener.onItemClick(item);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 

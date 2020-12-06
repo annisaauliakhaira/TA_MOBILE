@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,14 +48,15 @@ public class ExamcardActivity extends AppCompatActivity {
                 keterangan = "Tidak Ujian";
             }
             String passcode = data.getString("presence_code");
-            String course = data.getJSONObject("courses").getString("courses_name");
+            String class_name = data.getJSONObject("classes").getString("class_name");
+            Log.e("Datatatatat", class_name);
             String date = data.getString("date");
             QRGEncoder qrgEncoder = new QRGEncoder(passcode, null, QRGContents.Type.TEXT, 300);
 
             bitmap = qrgEncoder.encodeAsBitmap();
 
             iv_qrcode.setImageBitmap(bitmap);
-            tv_course.setText(course);
+            tv_course.setText(class_name);
             tv_date.setText(date);
             tv_presenceStatus.setText(keterangan);
 

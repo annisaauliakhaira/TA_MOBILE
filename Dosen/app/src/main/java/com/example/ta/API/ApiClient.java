@@ -8,16 +8,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    private static final String BASE_URL ="http://10.235.130.211:8000/api/";
+    private static final String BASE_URL = "http://10.235.189.150:8000/api/";
 
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient(){
-        HttpLoggingInterceptor interceptor =new HttpLoggingInterceptor();
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client =new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
-        if (retrofit==null){
+        if (retrofit == null){
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())

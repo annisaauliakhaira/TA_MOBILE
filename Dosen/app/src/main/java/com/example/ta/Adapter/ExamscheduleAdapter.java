@@ -38,10 +38,10 @@ public class ExamscheduleAdapter extends RecyclerView.Adapter<ExamscheduleAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         try {
-            holder.tv_class.setText(mData.getJSONObject(position).getJSONObject("class").getString("name"));
+            holder.tv_class.setText(mData.getJSONObject(position).getString("class_name"));
+            holder.tv_classId.setText(mData.getJSONObject(position).getString("class_id"));
             holder.tv_date.setText(mData.getJSONObject(position).getString("date"));
             holder.tv_time.setText(mData.getJSONObject(position).getString("start_hour")+" - "+mData.getJSONObject(position).getString("ending_hour"));
-            holder.tv_room.setText(mData.getJSONObject(position).getString("room"));
             holder.bind(mData.getJSONObject(position), listener);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -58,16 +58,16 @@ public class ExamscheduleAdapter extends RecyclerView.Adapter<ExamscheduleAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_class;
         private TextView tv_date;
+        private TextView tv_classId;
         private TextView tv_time;
-        private TextView tv_room;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tv_class = (TextView)itemView.findViewById(R.id.tv_class);
             tv_date = (TextView) itemView.findViewById(R.id.tv_date);
+            tv_classId = (TextView) itemView.findViewById(R.id.tv_classIdExam);
             tv_time = (TextView) itemView.findViewById(R.id.tv_time);
-            tv_room = (TextView) itemView.findViewById(R.id.tv_room);
         }
 
         public void bind (final JSONObject item, final OnItemClickListener l){

@@ -27,7 +27,8 @@
         android:background="#fff"
         android:hint="Type News event here ...."
         android:layout_width="match_parent"
-        android:layout_height="150dp">
+        android:layout_height="150dp"
+        android:gravity="top">
     </EditText>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -37,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#d67601"
-        android:text="Sign in"
+        android:text="SAVE"
         android:textColor="#fff"/>
     <RelativeLayout
         android:layout_width="match_parent"

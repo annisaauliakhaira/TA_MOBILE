@@ -12,12 +12,15 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blikoon.qrcodescanner.QrCodeActivity;
+import com.example.ta.API.ApiClient;
+import com.example.ta.API.ApiInterface;
 import com.example.ta.API.SessionManager;
 import com.example.ta.Adapter.ExamclassAdapter;
 import com.example.ta.ViewModel.ClassstudentViewModel;
@@ -32,8 +35,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ExamclassActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_QR_SCAN = 101;
@@ -41,7 +51,8 @@ public class ExamclassActivity extends AppCompatActivity {
     SessionManager sessionManager;
     private TextView tv_className, tv_classCode, tv_lecturerName, tv_dateDetail, tv_detailTime, tv_roomDetail;
     Button scan, news_event;
-    String id;
+    String id, token;
+    ApiInterface apiInterface;
 
     private ClassstudentViewModel studentViewModel;
 
@@ -53,14 +64,55 @@ public class ExamclassActivity extends AppCompatActivity {
         rv_detailclass.setLayoutManager(new LinearLayoutManager(this));
         tv_className = findViewById(R.id.tv_className);
         tv_classCode = findViewById(R.id.tv_classCode);
-        Toast.makeText(this, tv_classCode.getText().toString(), Toast.LENGTH_SHORT).show();
         tv_lecturerName = findViewById(R.id.tv_lectuerName);
         tv_dateDetail = findViewById(R.id.tv_dateDetail);
         tv_detailTime = findViewById(R.id.tv_timeDetail);
         tv_roomDetail = findViewById(R.id.tv_roomDetail);
         LoadingDialog loadingDialog = new LoadingDialog(this);
 
+        sessionManager = new SessionManager(this);
+        sessionManager.isLogin();
+        HashMap<String, String> User = sessionManager.getUserDetail();
+        token = User.get(sessionManager.TOKEN);
+
         scan = findViewById(R.id.bt_absen);
+
+        ExamclassAdapter iAdapter = new ExamclassAdapter(new ExamclassAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(JSONObject item) throws JSONException {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ExamclassActivity.this);
+                builder.setTitle("Choose Action");
+                String[] action ={"Absence", "Presence", "Permit"};
+                int checkedItem = item.getInt("presence_status");
+                builder.setSingleChoiceItems(action, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            String presence_id = item.getString("id");
+                            int selectedStatus =((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                            updateManual(presence_id, String.valueOf(selectedStatus));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+            }
+        });
+
+        iAdapter.notifyDataSetChanged();
+        rv_detailclass.setAdapter(iAdapter);
+
         scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,20 +137,7 @@ public class ExamclassActivity extends AppCompatActivity {
                         }).check();
             }
         });
-        ExamclassAdapter iAdapter = new ExamclassAdapter(new ExamclassAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(JSONObject item) throws JSONException {
 
-            }
-        });
-
-        iAdapter.notifyDataSetChanged();
-        rv_detailclass.setAdapter(iAdapter);
-
-        sessionManager = new SessionManager(this);
-        sessionManager.isLogin();
-        HashMap<String, String> User = sessionManager.getUserDetail();
-        String token = User.get(sessionManager.TOKEN);
 
         if (sessionManager.getUserDetail().equals("")){
             Intent intent = new Intent(ExamclassActivity.this, LoginActivity.class);
@@ -108,8 +147,8 @@ public class ExamclassActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 JSONObject classDetail = new JSONObject(Objects.requireNonNull(intent.getStringExtra("data")));
                 id = classDetail.getString("id");
-                tv_className.setText(classDetail.getJSONObject("class").getString("name"));
-                tv_classCode.setText(classDetail.getJSONObject("class").getString("id"));
+                tv_className.setText(classDetail.getString("class_name"));
+                tv_classCode.setText(classDetail.getString("class_id"));
                 tv_lecturerName.setText("");
                 tv_dateDetail.setText(classDetail.getString("date"));
                 tv_detailTime.setText(classDetail.getString("start_hour")+" - " + classDetail.getString("ending_hour"));
@@ -124,7 +163,6 @@ public class ExamclassActivity extends AppCompatActivity {
                                 Intent intent = new Intent(ExamclassActivity.this, NewsEventActivity.class);
                                 intent.putExtra("data", id);
                                 startActivity(intent);
-                                loadingDialog.startLoadingDialog();
                         }
                     }
                 });
@@ -141,7 +179,6 @@ public class ExamclassActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
 
     }
 
@@ -173,19 +210,76 @@ public class ExamclassActivity extends AppCompatActivity {
             if (data == null)
                 return;
             //Getting the passed result
-            String result = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult");
-            AlertDialog alertDialog = new AlertDialog.Builder(ExamclassActivity.this).create();
-            alertDialog.setTitle("Scan result");
-            alertDialog.setMessage(result);
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
+            String code = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult");
+            PresenceUpdate(token, code);
 
         }
+    }
+
+    public void PresenceUpdate(String token, String code){
+        apiInterface= ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseBody> presenceCall = apiInterface.getPresence(token, code);
+        presenceCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                    JSONObject jsonRESULTS = null;
+                    try {
+                        jsonRESULTS = new JSONObject(response.body().string());
+                        JSONObject jsonData = jsonRESULTS.getJSONObject("data");
+//                        String student_name = "Name: "+jsonData.getString("name");
+//                        String nim = "NIM: " + jsonData.getString("nim");
+                        String presenceStatus = jsonData.getString("presence_status");
+                        String keterangan = "Sudah Mengambil Presensi";
+                        if (presenceStatus.equals("0")){
+                            keterangan = "Belum Ujian";
+                        }else if (presenceStatus.equals("1")){
+                            keterangan = "Sudah Ujian";
+                        }else if (presenceStatus.equals("2")){
+                            keterangan = "Tidak Ujian";
+                        }
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(ExamclassActivity.this).create();
+                        alertDialog.setTitle("Presence Results");
+                        alertDialog.setMessage(keterangan);
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+
+                                    }
+                                });
+                        alertDialog.show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void updateManual(String presence_id, String presence_status){
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseBody> presenceCall = apiInterface.UpdateManual(token, presence_id, presence_status);
+        presenceCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(ExamclassActivity.this, "Update Data is Success", Toast.LENGTH_SHORT).show();
+                studentViewModel.setStudentclass(token, id);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
 }

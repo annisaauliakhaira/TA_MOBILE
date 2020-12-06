@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:fontFamily="serif"
-        android:text="Tap to Scan"
+        android:text="Presence Code"
         android:textSize="24dp"
         android:textColor="#ffffff"
         android:textStyle="bold"

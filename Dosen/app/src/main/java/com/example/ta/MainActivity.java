@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     ApiInterface apiInterface;
     SessionManager sessionManager;
+    LoadingDialog loadingDialog = new LoadingDialog(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
 
     }
 
@@ -123,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     logout();
                 break;
         }
-
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#badbeb"
+    android:padding="50dp">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Edit Data"
+        android:textSize="28dp"
+        android:textColor="#fff"
+        android:background="#1380ae"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/et_updateNews"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:layout_marginBottom="4dp"
+        android:background="#fff" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/bt_updateNews"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="#d67601"
+            android:text="CANCEL"
+            android:textSize="16dp"
+            android:textColor="#fff"/>
+        <Button
+            android:id="@+id/bt_cancelUpdate"
+            android:layout_marginLeft="10dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="#0c9603"
+            android:text="UPDATE"
+            android:textColor="#fff"
+            android:textSize="16dp"/>
+    </LinearLayout>
+
+
+</LinearLayout>

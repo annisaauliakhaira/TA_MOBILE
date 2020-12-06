@@ -16,6 +16,7 @@ public interface ApiInterface {
             @Field("username") String username,
             @Field("password") String password
     );
+
     @POST("lecturer/logout")
     Call<ResponseBody>logout(@Header("Authorization") String authToken);
 
@@ -26,12 +27,39 @@ public interface ApiInterface {
     Call<ResponseBody> getExamschedule(@Header("Authorization") String authToken);
 
     @POST("lecturer/details")
-    Call<ResponseBody> getDetail(@Header("Authorization") String authToken);
+    Call<ResponseBody>getDetail(@Header("Authorization") String authToken);
 
     @POST("lecturer/examclass/{id}")
     Call<ResponseBody>getDetailKelas(@Header("Authorization") String authToken, @Path("id") String examclass_id);
 
+    @FormUrlEncoded
+    @POST("lecturer/saveNews/{exam_id}")
+    Call<ResponseBody>saveNewsData(
+            @Field("news_event") String news_event,
+            @Header("Authorization") String authToken,
+            @Path("exam_id") String exam_id);
+
     @POST("lecturer/show/{id}")
     Call<ResponseBody>getNewsEvent(@Header("Authorization") String authToken, @Path("id") String news_id);
+
+    @FormUrlEncoded
+    @POST("lecturer/update/{id}")
+    Call<ResponseBody>getUpdateNews(
+            @Field("news_event") String news_event,
+            @Header("Authorization") String authToken,
+            @Path("id") String news_id);
+
+    @POST("lecturer/delete/{id}")
+    Call<ResponseBody>getDeleteNews(@Header("Authorization") String authToken, @Path("id") String news_id);
+
+    @FormUrlEncoded
+    @POST("lecturer/presence")
+    Call<ResponseBody>getPresence(@Header("Authorization") String authToken, @Field("code") String code);
+
+    @POST("lecturer/getHistory")
+    Call<ResponseBody>getHistory(@Header("Authorization") String authToken);
+
+    @POST("lecturer/updateManual/{id}/{presence_status}")
+    Call<ResponseBody>UpdateManual(@Header("Authorization") String authToken, @Path("id") String id, @Path("presence_status") String presence_status);
 
 }

@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mahasiswa"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ExamcardActivity"></activity>
+        <activity android:name=".ExamcardActivity"
+            android:theme="@style/Theme.Mahasiswa.NoActionBar"></activity>
         <activity
             android:name=".LoginActivity"
             android:theme="@style/Theme.Mahasiswa.NoActionBar">

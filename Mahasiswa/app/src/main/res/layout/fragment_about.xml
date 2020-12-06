@@ -8,17 +8,35 @@
     android:padding="40dp"
     android:background="#467087">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:fontFamily="serif-monospace"
-        android:textAlignment="center"
-        android:text="PROFILE"
-        android:textColor="#ffffff"
-        android:textSize="30dp"
-        android:textStyle="bold"
-        tools:ignore="RtlCompat" />
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="303dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="serif-monospace"
+            android:text="PROFILE"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            tools:ignore="RtlCompat"
+            android:paddingBottom="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif-monospace"
+            android:layout_gravity="center"
+            android:text="WELCOME STUDENT"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:textSize="28dp"
+            android:textStyle="bold"
+            tools:ignore="RtlCompat" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="309dp"

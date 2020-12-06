@@ -74,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         jsonRESULTS = new JSONObject(response.body().string());
                         JSONObject jsonData = jsonRESULTS.getJSONObject("data");
-                        Log.e("jsonData", jsonData.toString());
                         if (jsonData.length()!=0){
                             String token =jsonData.getString("token");
                             String name = jsonData.getString("name");
