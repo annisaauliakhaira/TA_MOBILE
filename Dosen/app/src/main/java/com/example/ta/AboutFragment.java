@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ public class AboutFragment extends Fragment {
     private AboutViewModel aboutViewModel;
     SessionManager sessionManager;
     private TextView tv_name, tv_nip, tv_email;
+    Button bt_changePass;
 
     public AboutFragment() {
     }
@@ -39,10 +41,10 @@ public class AboutFragment extends Fragment {
         super.onViewCreated(v, savedInstanceState);
         tv_name =v.findViewById(R.id.tv_name1);
         tv_nip = v.findViewById(R.id.tv_nip1);
-        tv_email = v.findViewById(R.id.tv_email);
+        bt_changePass = v.findViewById(R.id.bt_changePass);
 
         sessionManager = new SessionManager(getContext());
-        sessionManager.isLogin();
+//        sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
 
@@ -54,7 +56,6 @@ public class AboutFragment extends Fragment {
                 if(stringStringHashMap.size() > 0){
                     tv_name.setText(stringStringHashMap.get(aboutViewModel.NAME));
                     tv_nip.setText("NIP. "+ stringStringHashMap.get(aboutViewModel.NIP));
-                    tv_email.setText(stringStringHashMap.get(aboutViewModel.EMAIL));
                 }
             }
         });

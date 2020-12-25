@@ -60,7 +60,7 @@ public class SessionManager {
 
     public void isLogin(){
         String token = sharedPreferences.getString(TOKEN, null);
-        if (token.equals("")){
+        if (!token.equals("")){
             final HashMap<String, String> aboutt_ = new HashMap<>();
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<ResponseBody> isLoginCall = apiInterface.isLogin(token);

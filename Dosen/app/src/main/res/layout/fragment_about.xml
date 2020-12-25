@@ -97,25 +97,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_gravity="center"
             android:paddingLeft="30dp">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/mail" />
-            <TextView
-                android:id="@+id/tv_email"
-                android:paddingLeft="5dp"
+            <Button
+                android:id="@+id/bt_changePass"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="husnilk@fiti.unand.ac.id"/>
-
+                android:layout_height="31dp"
+                android:background="#2b8b28"
+                android:drawableStart="@drawable/ic_change"
+                android:text="  Change Password  "
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="12sp"></Button>
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="15dp"/>
 
 
     </LinearLayout>

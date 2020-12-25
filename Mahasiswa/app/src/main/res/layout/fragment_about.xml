@@ -22,8 +22,7 @@
             android:textColor="#ffffff"
             android:textSize="30dp"
             android:textStyle="bold"
-            tools:ignore="RtlCompat"
-            android:paddingBottom="20dp"/>
+            tools:ignore="RtlCompat"/>
 
         <TextView
             android:layout_width="match_parent"

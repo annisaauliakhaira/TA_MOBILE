@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ public class ExamclassActivity extends AppCompatActivity {
     SessionManager sessionManager;
     private TextView tv_className, tv_classCode, tv_lecturerName, tv_dateDetail, tv_detailTime, tv_roomDetail;
     Button scan, news_event;
+    ImageButton iv_geofence;
     String id, token;
     ApiInterface apiInterface;
 
@@ -75,6 +77,8 @@ public class ExamclassActivity extends AppCompatActivity {
         HashMap<String, String> User = sessionManager.getUserDetail();
         token = User.get(sessionManager.TOKEN);
 
+        iv_geofence = findViewById(R.id.iv_geofence);
+
         scan = findViewById(R.id.bt_absen);
 
         ExamclassAdapter iAdapter = new ExamclassAdapter(new ExamclassAdapter.OnItemClickListener() {
@@ -94,9 +98,9 @@ public class ExamclassActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            String presence_id = item.getString("id");
+                            String presence_code = item.getString("presence_code");
                             int selectedStatus =((AlertDialog)dialog).getListView().getCheckedItemPosition();
-                            updateManual(presence_id, String.valueOf(selectedStatus));
+                            updateManual(presence_code, String.valueOf(selectedStatus));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -147,12 +151,16 @@ public class ExamclassActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 JSONObject classDetail = new JSONObject(Objects.requireNonNull(intent.getStringExtra("data")));
                 id = classDetail.getString("id");
-                tv_className.setText(classDetail.getString("class_name"));
-                tv_classCode.setText(classDetail.getString("class_id"));
+                tv_className.setText(classDetail.getString("course_name"));
+                tv_classCode.setText(classDetail.getString("class_name"));
                 tv_lecturerName.setText("");
                 tv_dateDetail.setText(classDetail.getString("date"));
                 tv_detailTime.setText(classDetail.getString("start_hour")+" - " + classDetail.getString("ending_hour"));
                 tv_roomDetail.setText(classDetail.getString("room"));
+
+                String room_id = classDetail.getString("room_id");
+                String lat = classDetail.getString("latitude");
+                String lng = classDetail.getString("longitude");
 
                 news_event = findViewById(R.id.bt_berita);
                 news_event.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +181,18 @@ public class ExamclassActivity extends AppCompatActivity {
                     @Override
                     public void onChanged(JSONArray jsonArray) {
                         iAdapter.setData(jsonArray);
+                    }
+                });
+
+
+                iv_geofence.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ExamclassActivity.this, GeofenceActivity.class);
+                        intent.putExtra("room_id", room_id);
+                        intent.putExtra("lat", lat);
+                        intent.putExtra("lng", lng);
+                        startActivity(intent);
                     }
                 });
             } catch (JSONException e) {
@@ -227,8 +247,6 @@ public class ExamclassActivity extends AppCompatActivity {
                     try {
                         jsonRESULTS = new JSONObject(response.body().string());
                         JSONObject jsonData = jsonRESULTS.getJSONObject("data");
-//                        String student_name = "Name: "+jsonData.getString("name");
-//                        String nim = "NIM: " + jsonData.getString("nim");
                         String presenceStatus = jsonData.getString("presence_status");
                         String keterangan = "Sudah Mengambil Presensi";
                         if (presenceStatus.equals("0")){
@@ -246,7 +264,6 @@ public class ExamclassActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-
                                     }
                                 });
                         alertDialog.show();
@@ -265,9 +282,9 @@ public class ExamclassActivity extends AppCompatActivity {
         });
     }
 
-    public void updateManual(String presence_id, String presence_status){
+    public void updateManual(String presence_code, String presence_status){
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseBody> presenceCall = apiInterface.UpdateManual(token, presence_id, presence_status);
+        Call<ResponseBody> presenceCall = apiInterface.UpdateManual(token, presence_code, presence_status);
         presenceCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

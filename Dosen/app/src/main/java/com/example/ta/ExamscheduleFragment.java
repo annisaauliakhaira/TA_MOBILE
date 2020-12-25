@@ -74,7 +74,7 @@ public class ExamscheduleFragment extends Fragment {
         String token = User.get(sessionManager.TOKEN);
 
         examViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(ExamViewModel.class);
-        examViewModel.setExamschedule(token);
+        examViewModel.setExamschedule(token, "2");
         examViewModel.getExamschedule().observe(this, new Observer<JSONArray>() {
             @Override
             public void onChanged(JSONArray datas) {

@@ -21,13 +21,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ExamViewModel extends ViewModel {
-
     ApiInterface apiInterface;
     private MutableLiveData<JSONArray> listExamschedule = new MutableLiveData<>();
 
-    public void setExamschedule(String token){
+    public void setExamschedule(String token, String examtype_id){
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseBody> examScheduleCall = apiInterface.getExamschedule(token);
+        Call<ResponseBody> examScheduleCall = apiInterface.getExamschedule(token, examtype_id);
         examScheduleCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

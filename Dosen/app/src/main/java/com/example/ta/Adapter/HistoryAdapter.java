@@ -33,8 +33,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         try {
-            holder.tv_classHistory.setText(mData.getJSONObject(position).getString("class_name"));
-            holder.tv_classIdHistory.setText(mData.getJSONObject(position).getString("class_id"));
+            holder.tv_classHistory.setText(mData.getJSONObject(position).getString("courses_name"));
+            holder.tv_classIdHistory.setText(mData.getJSONObject(position).getString("class_name"));
             holder.tv_dateHistory.setText(mData.getJSONObject(position).getString("date"));
             holder.tv_totalStudent.setText("Students : "+mData.getJSONObject(position).getString("total"));
             holder.tv_presenceTotal.setText("Presence : "+mData.getJSONObject(position).getString("hadir"));

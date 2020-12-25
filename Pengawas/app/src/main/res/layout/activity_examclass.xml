@@ -115,6 +115,16 @@
             android:backgroundTint="#1380ae"
             android:drawableStart="@drawable/ic_news"
             android:textColor="#fff"/>
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/iv_geofence"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_geofence"
+            android:backgroundTint="#2b8b28" />
     </LinearLayout>
 
 </LinearLayout>

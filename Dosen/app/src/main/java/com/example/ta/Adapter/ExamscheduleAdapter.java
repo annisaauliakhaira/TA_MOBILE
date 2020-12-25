@@ -30,30 +30,29 @@ public class ExamscheduleAdapter extends RecyclerView.Adapter<ExamscheduleAdapte
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View mView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_row_exam, viewGroup, false);
+        View mView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_row_exam,
+                viewGroup, false);
         return new MyViewHolder(mView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
         try {
-            holder.tv_class.setText(mData.getJSONObject(position).getString("class_name"));
-            holder.tv_classId.setText(mData.getJSONObject(position).getString("class_id"));
+            holder.tv_class.setText(mData.getJSONObject(position).getString("course_name"));
+            holder.tv_classId.setText(mData.getJSONObject(position).getString("class_name"));
             holder.tv_date.setText(mData.getJSONObject(position).getString("date"));
-            holder.tv_time.setText(mData.getJSONObject(position).getString("start_hour")+" - "+mData.getJSONObject(position).getString("ending_hour"));
+            holder.tv_time.setText(mData.getJSONObject(position).getString("start_hour")+" - "
+                    +mData.getJSONObject(position).getString("ending_hour"));
             holder.bind(mData.getJSONObject(position), listener);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public int getItemCount() {
         return mData.length();
     }
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_class;
@@ -82,12 +81,10 @@ public class ExamscheduleAdapter extends RecyclerView.Adapter<ExamscheduleAdapte
                 }
             });
         }
-
     }
 
     public interface OnItemClickListener{
         void onItemClick(JSONObject item) throws JSONException;
     }
-
 
 }

@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sessionManager = new SessionManager(this);
+        sessionManager.isLogin();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -72,10 +74,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void logout(){
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        sessionManager = new SessionManager(this);
-        sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
+        Log.e("okohohoh", token);
         Call<ResponseBody> logoutCall = apiInterface.logout(token);
         logoutCall.enqueue(new Callback<ResponseBody>(){
 
@@ -117,11 +118,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
                 break;
             case R.id.nav_examschedule:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExamscheduleFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new tabExamscheduleFragment()).commit();
                 break;
             case R.id.nav_history:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HistoryFragment()).commit();
                 break;
+//            case R.id.nav_changePass:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ChangePasswordActivity()).commit();
+//                break;
             case R.id.nav_logout:
                     logout();
                 break;
@@ -136,8 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView nav_Name = headerView.findViewById(R.id.tv_nameDosen);
         TextView nav_Nip = headerView.findViewById(R.id.tv_nipDosen);
 
-        sessionManager = new SessionManager(this);
-        sessionManager.isLogin();
+
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
         apiInterface = ApiClient.getClient().create(ApiInterface.class);

@@ -23,8 +23,9 @@ public interface ApiInterface {
     @POST("lecturer/isLogin")
     Call<ResponseBody>isLogin(@Header("Authorization") String authToken);
 
+    @FormUrlEncoded
     @POST("lecturer/examschedule")
-    Call<ResponseBody> getExamschedule(@Header("Authorization") String authToken);
+    Call<ResponseBody> getExamschedule(@Header("Authorization") String authToken, @Field("examtype_id") String examtype_id);
 
     @POST("lecturer/details")
     Call<ResponseBody>getDetail(@Header("Authorization") String authToken);
@@ -59,7 +60,10 @@ public interface ApiInterface {
     @POST("lecturer/getHistory")
     Call<ResponseBody>getHistory(@Header("Authorization") String authToken);
 
-    @POST("lecturer/updateManual/{id}/{presence_status}")
-    Call<ResponseBody>UpdateManual(@Header("Authorization") String authToken, @Path("id") String id, @Path("presence_status") String presence_status);
+    @POST("lecturer/updateManual/{code}/{presence_status}")
+    Call<ResponseBody>UpdateManual(@Header("Authorization") String authToken, @Path("code") String id, @Path("presence_status") String presence_status);
 
+    @FormUrlEncoded
+    @POST("lecturer/saveLatLong/{id}")
+    Call<ResponseBody>saveLatLong(@Header("Authorization") String authToken, @Path("id") String id, @Field("lat")String lat, @Field("lng")String lng);
 }

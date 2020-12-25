@@ -25,7 +25,6 @@ public class AboutViewModel extends ViewModel {
     private MutableLiveData<HashMap<String, String>> mData = new MutableLiveData<>();
     public static final String NAME = "name";
     public static final String NIP = "nip";
-    public static final String EMAIL = "email";
 
     public void setAbout(String token){
         final HashMap<String, String> about_ = new HashMap<>();
@@ -42,10 +41,10 @@ public class AboutViewModel extends ViewModel {
                             if (abouts.length()!=0){
                                 String name = abouts.getJSONObject("lecturer").getString("name");
                                 String nip = abouts.getJSONObject("lecturer").getString("nip");
-                                String email = abouts.getJSONObject("user").getString("email");
+//                                String email = abouts.getJSONObject("user").getString("email");
                                 about_.put(NAME, name);
                                 about_.put(NIP, nip);
-                                about_.put(EMAIL, email);
+//                                about_.put(EMAIL, email);
                                 mData.setValue(about_);
                             }
                     } catch (JSONException e) {

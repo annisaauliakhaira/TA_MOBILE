@@ -55,6 +55,10 @@ public interface ApiInterface {
     @POST("staff/presence")
     Call<ResponseBody>getPresence(@Header("Authorization") String authToken, @Path("code") String code);
 
-    @POST("staff/updateManual/{id}/{presence_status}")
-    Call<ResponseBody>UpdateManual(@Header("Authorization") String authToken, @Path("id") String id, @Path("presence_status") String presence_status);
+    @POST("staff/updateManual/{code}/{presence_status}")
+    Call<ResponseBody>UpdateManual(@Header("Authorization") String authToken, @Path("code") String id, @Path("presence_status") String presence_status);
+
+    @FormUrlEncoded
+    @POST("staff/saveLatLong/{id}")
+    Call<ResponseBody>saveLatLong(@Header("Authorization") String authToken, @Path("id") String id, @Field("lat")String lat, @Field("lng")String lng);
 }
