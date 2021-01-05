@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
                 break;
             case R.id.nav_examschedule:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExamscheduleFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new tabExamScheduleFragment()).commit();
                 break;
             case R.id.nav_logout:
                 logout();
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView nav_Name = headerView.findViewById(R.id.tv_namaStaff);
-        TextView nav_Nip = headerView.findViewById(R.id.tv_nipStaff);
+        TextView nav_Username = headerView.findViewById(R.id.tv_usernameStaff);
 
         sessionManager = new SessionManager(this);
         sessionManager.isLogin();
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         jsonRESULTS = new JSONObject(response.body().string());
                         JSONObject headers = jsonRESULTS.getJSONObject("data");
                         nav_Name.setText(headers.getJSONObject("staff").getString("name"));
-                        nav_Nip.setText("NIP. "+headers.getJSONObject("staff").getString("nip"));
+                        nav_Username.setText(headers.getJSONObject("staff").getString("username"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {

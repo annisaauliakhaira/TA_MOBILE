@@ -1,97 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".LoginActivity">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="15dp"
-        android:layout_weight="1.5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:src="@drawable/logo_unand"></ImageView>
-        <RelativeLayout
-
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"></RelativeLayout>
-        <TextView
-            android:textAlignment="center"
-            android:text="Sistem Informasi Presensi Ujian"
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="15dp"
+            android:layout_weight="1.5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="15dp"></TextView>
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:src="@drawable/logo_unand"></ImageView>
+            <RelativeLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"></RelativeLayout>
+            <TextView
+                android:textAlignment="center"
+                android:text="Sistem Informasi Presensi Ujian"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="15dp"></TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="Login"
+                android:textColor="#FFFFFF"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></TextView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dp"></RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_username"
+                android:paddingLeft="10dp"
+                android:background="@drawable/form"
+                android:drawableStart="@drawable/ic_about"
+                android:hint=" Username"
+                android:text="19820118200"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+            </EditText>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="15dp"></RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_password"
+                android:paddingLeft="10dp"
+                android:background="@drawable/form"
+                android:drawableStart="@drawable/ic_password"
+                android:hint=" Password"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+            </EditText>
+
+            <Button
+                android:id="@+id/bt_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="22dp"
+                android:layout_marginStart="42dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="42dp"
+                android:background="#d67601"
+                android:text="Sign in"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="18sp"></Button>
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="15dp"
-        android:layout_weight="1"
-        android:background="@drawable/bg_gradient"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:text="Login"
-            android:textColor="#FFFFFF"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></TextView>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp"></RelativeLayout>
-
-        <EditText
-            android:id="@+id/et_username"
-            android:paddingLeft="10dp"
-            android:background="@drawable/form"
-            android:drawableStart="@drawable/ic_about"
-            android:hint=" Username"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
-        </EditText>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="15dp"></RelativeLayout>
-
-        <EditText
-            android:id="@+id/et_password"
-            android:paddingLeft="10dp"
-            android:background="@drawable/form"
-            android:drawableStart="@drawable/ic_password"
-            android:hint=" Password"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
-        </EditText>
-
-        <Button
-            android:id="@+id/bt_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="22dp"
-            android:layout_marginStart="42dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="42dp"
-            android:background="#d67601"
-            android:text="Sign in"
-            android:textAllCaps="false"
-            android:textColor="#fff"
-            android:textSize="18sp"></Button>
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

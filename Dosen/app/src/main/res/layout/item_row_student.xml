@@ -1,51 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingTop="3dp"
-    android:paddingBottom="3dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
     android:background="#badbeb">
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerVertical="true"
-    android:backgroundTint="#fff"
-    android:background="@drawable/border2"
-    android:padding="8dp"
-    android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="#badbeb"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/tv_studentNim"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:paddingRight="8dp"
-                android:text="1611521006"/>
-            <TextView
-                android:id="@+id/tv_studentName"
-                android:layout_width="180dp"
-                android:layout_height="match_parent"
-                android:text="Annisa Aulia Khaira"
-                android:paddingRight="30dp"/>
-            <TextView
-                android:id="@+id/tv_presence"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:text="present"/>
+            android:layout_centerVertical="true"
+            android:background="@drawable/border2"
+            android:backgroundTint="#fff"
+            android:orientation="vertical"
+            android:padding="8dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_studentNim"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:paddingRight="8dp"
+                    android:text="1611521006" />
+
+                <TextView
+                    android:id="@+id/tv_studentName"
+                    android:layout_width="180dp"
+                    android:layout_height="match_parent"
+                    android:paddingRight="30dp"
+                    android:text="Annisa Aulia Khaira" />
+
+                <TextView
+                    android:id="@+id/tv_presence"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:text="present"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:backgroundTint="#fff"
-        android:background="@drawable/border"
+        android:background="#fff"
         android:padding="10dp"
         android:orientation="horizontal">
         <LinearLayout

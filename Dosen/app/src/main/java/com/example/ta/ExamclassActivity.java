@@ -55,6 +55,7 @@ public class ExamclassActivity extends AppCompatActivity {
     ImageButton iv_geofence;
     String id, token;
     ApiInterface apiInterface;
+    private LoadingDialog loadingDialog;
 
     private ClassstudentViewModel studentViewModel;
 
@@ -70,7 +71,7 @@ public class ExamclassActivity extends AppCompatActivity {
         tv_dateDetail = findViewById(R.id.tv_dateDetail);
         tv_detailTime = findViewById(R.id.tv_timeDetail);
         tv_roomDetail = findViewById(R.id.tv_roomDetail);
-        LoadingDialog loadingDialog = new LoadingDialog(this);
+        loadingDialog = new LoadingDialog(this);
 
         sessionManager = new SessionManager(this);
         sessionManager.isLogin();
@@ -117,6 +118,8 @@ public class ExamclassActivity extends AppCompatActivity {
         iAdapter.notifyDataSetChanged();
         rv_detailclass.setAdapter(iAdapter);
 
+        loadingDialog.startLoadingDialog();
+
         scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,61 +146,57 @@ public class ExamclassActivity extends AppCompatActivity {
         });
 
 
-        if (sessionManager.getUserDetail().equals("")){
-            Intent intent = new Intent(ExamclassActivity.this, LoginActivity.class);
-            startActivity(intent);
-        }else {
-            try {
-                Intent intent = getIntent();
-                JSONObject classDetail = new JSONObject(Objects.requireNonNull(intent.getStringExtra("data")));
-                id = classDetail.getString("id");
-                tv_className.setText(classDetail.getString("course_name"));
-                tv_classCode.setText(classDetail.getString("class_name"));
-                tv_lecturerName.setText("");
-                tv_dateDetail.setText(classDetail.getString("date"));
-                tv_detailTime.setText(classDetail.getString("start_hour")+" - " + classDetail.getString("ending_hour"));
-                tv_roomDetail.setText(classDetail.getString("room"));
+        try {
+            Intent intent = getIntent();
+            JSONObject classDetail = new JSONObject(Objects.requireNonNull(intent.getStringExtra("data")));
+            id = classDetail.getString("id");
+            tv_className.setText(classDetail.getString("course_name"));
+            tv_classCode.setText(classDetail.getString("class_name"));
+            tv_lecturerName.setText("");
+            tv_dateDetail.setText(classDetail.getString("date"));
+            tv_detailTime.setText(classDetail.getString("start_hour")+" - " + classDetail.getString("ending_hour"));
+            tv_roomDetail.setText(classDetail.getString("room"));
 
-                String room_id = classDetail.getString("room_id");
-                String lat = classDetail.getString("latitude");
-                String lng = classDetail.getString("longitude");
+            String room_id = classDetail.getString("room_id");
+            String lat = classDetail.getString("latitude");
+            String lng = classDetail.getString("longitude");
 
-                news_event = findViewById(R.id.bt_berita);
-                news_event.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        switch (v.getId()){
-                            case R.id.bt_berita:
-                                Intent intent = new Intent(ExamclassActivity.this, NewsEventActivity.class);
-                                intent.putExtra("data", id);
-                                startActivity(intent);
-                        }
+            news_event = findViewById(R.id.bt_berita);
+            news_event.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()){
+                        case R.id.bt_berita:
+                            Intent intent = new Intent(ExamclassActivity.this, NewsEventActivity.class);
+                            intent.putExtra("data", id);
+                            startActivity(intent);
                     }
-                });
+                }
+            });
 
-                studentViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(ClassstudentViewModel.class);
-                studentViewModel.setStudentclass(token, id);
-                studentViewModel.getStudentClass().observe(this, new Observer<JSONArray>() {
-                    @Override
-                    public void onChanged(JSONArray jsonArray) {
-                        iAdapter.setData(jsonArray);
-                    }
-                });
+            studentViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(ClassstudentViewModel.class);
+            studentViewModel.setStudentclass(token, id);
+            studentViewModel.getStudentClass().observe(this, new Observer<JSONArray>() {
+                @Override
+                public void onChanged(JSONArray jsonArray) {
+                    iAdapter.setData(jsonArray);
+                    loadingDialog.dismissDialog();
+                }
+            });
 
 
-                iv_geofence.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(ExamclassActivity.this, GeofenceActivity.class);
-                        intent.putExtra("room_id", room_id);
-                        intent.putExtra("lat", lat);
-                        intent.putExtra("lng", lng);
-                        startActivity(intent);
-                    }
-                });
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            iv_geofence.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ExamclassActivity.this, GeofenceActivity.class);
+                    intent.putExtra("room_id", room_id);
+                    intent.putExtra("lat", lat);
+                    intent.putExtra("lng", lng);
+                    startActivity(intent);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
     }

@@ -48,7 +48,8 @@ import androidmads.library.qrgenearator.QRGEncoder;
 
 public class ExamcardActivity extends AppCompatActivity implements OnMapReadyCallback {
     ImageView iv_qrcode;
-    TextView tv_course, tv_date, tv_presenceStatus;
+    TextView tv_course, tv_date, tv_presenceStatus, tv_studentName, tv_studentNim, tv_roomCard,
+            tv_timeCard, tv_timeCard2, tv_className, tv_examtype;
     JSONObject data;
     Bitmap bitmap;
 
@@ -79,6 +80,13 @@ public class ExamcardActivity extends AppCompatActivity implements OnMapReadyCal
         tv_course = findViewById(R.id.tv_course);
         tv_date = findViewById(R.id.tv_date);
         tv_presenceStatus = findViewById(R.id.tv_presenceStatus);
+        tv_studentName = findViewById(R.id.tv_studentName);
+        tv_studentNim = findViewById(R.id.tv_studentNim);
+        tv_roomCard = findViewById(R.id.tv_roomCard);
+        tv_timeCard = findViewById(R.id.tv_timeCard);
+        tv_timeCard2 = findViewById(R.id.tv_timeCard2);
+        tv_className = findViewById(R.id.tv_class_name);
+        tv_examtype = findViewById(R.id.tv_examtype);
 
         Intent intent = getIntent();
         try {
@@ -86,15 +94,22 @@ public class ExamcardActivity extends AppCompatActivity implements OnMapReadyCal
             String presenceStatus = data.getString("presence_status");
             String keterangan = "Status Not Found";
             if (presenceStatus.equals("0")){
-                keterangan = "Belum Ujian";
+                keterangan = ": "+ "Absence";
             }else if (presenceStatus.equals("1")){
-                keterangan = "Sudah Ujian";
+                keterangan = ": "+ "Presence";
             }else if (presenceStatus.equals("2")){
-                keterangan = "Tidak Ujian";
+                keterangan = ": "+ "Permit";
             }
             String passcode = data.getString("presence_code");
-            String class_name = data.getJSONObject("classes").getString("class_name");
-            String date = data.getString("date");
+            String courses = data.getJSONObject("classes").getString("class_name");
+            String date = ": "+data.getString("date");
+            String student_name = ": "+ data.getString("student_name");
+            String student_nim = ": "+ data.getString("nim");
+            String room = ": "+ data.getString("room");
+            String time_begin = ": "+ data.getString("start_hour");
+            String time_finished = " - "+ data.getString("ending_hour");
+            String class_name = data.getJSONObject("classes").getString("class_id");
+            String examtype = data.getString("exam_type");
 
             lat = data.getString("latitude");
             lng = data.getString("longitude");
@@ -104,9 +119,16 @@ public class ExamcardActivity extends AppCompatActivity implements OnMapReadyCal
             bitmap = qrgEncoder.encodeAsBitmap();
 
             iv_qrcode.setImageBitmap(bitmap);
-            tv_course.setText(class_name);
+            tv_course.setText(courses);
             tv_date.setText(date);
             tv_presenceStatus.setText(keterangan);
+            tv_studentName.setText(student_name);
+            tv_studentNim.setText(student_nim);
+            tv_roomCard.setText(room);
+            tv_timeCard.setText(time_begin);
+            tv_timeCard2.setText(time_finished);
+            tv_className.setText(class_name);
+            tv_examtype.setText(examtype);
 
         } catch (JSONException e) {
             e.printStackTrace();

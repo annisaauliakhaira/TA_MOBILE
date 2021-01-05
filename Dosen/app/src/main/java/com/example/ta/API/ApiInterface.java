@@ -17,6 +17,16 @@ public interface ApiInterface {
             @Field("password") String password
     );
 
+    @FormUrlEncoded
+    @POST("lecturer/changePassword")
+    Call<ResponseBody> changePassword(
+            @Header("Authorization") String authToken,
+            @Field("old_password") String oldPassword,
+            @Field("new_password") String newPassword,
+            @Field("confirm_password") String confirmPassword
+    );
+
+
     @POST("lecturer/logout")
     Call<ResponseBody>logout(@Header("Authorization") String authToken);
 

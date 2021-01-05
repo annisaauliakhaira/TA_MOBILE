@@ -22,8 +22,18 @@ public interface ApiInterface {
     @POST("staff/isLogin")
     Call<ResponseBody>isLogin(@Header("Authorization") String authToken);
 
+    @FormUrlEncoded
+    @POST("staff/changePassword")
+    Call<ResponseBody> changePassword(
+            @Header("Authorization") String authToken,
+            @Field("old_password") String oldPassword,
+            @Field("new_password") String newPassword,
+            @Field("confirm_password") String confirmPassword
+    );
+
+    @FormUrlEncoded
     @POST("staff/examschedule")
-    Call<ResponseBody>getExamSchedule(@Header("Authorization") String authToken);
+    Call<ResponseBody>getExamSchedule(@Header("Authorization") String authToken, @Field("examtype_id") String examtype_id);
 
     @POST("staff/details")
     Call<ResponseBody>getDetail(@Header("Authorization") String authToken);

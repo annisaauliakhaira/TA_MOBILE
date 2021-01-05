@@ -26,6 +26,7 @@ public class HistoryFragment extends Fragment {
     private RecyclerView rv;
     private HistoryViewModel historyViewModel;
     SessionManager sessionManager;
+    private LoadingDialog loadingDialog;
 
     public HistoryFragment(){
 
@@ -50,15 +51,18 @@ public class HistoryFragment extends Fragment {
         rv.setAdapter(historyAdapter);
 
         sessionManager = new SessionManager(getContext());
+        loadingDialog = new LoadingDialog(getActivity());
         sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
 
         historyViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(HistoryViewModel.class);
+        loadingDialog.startLoadingDialog();
         historyViewModel.setHistory(token);
         historyViewModel.getHistory().observe(this, new Observer<JSONArray>() {
             @Override
             public void onChanged(JSONArray datas) {
+                loadingDialog.dismissDialog();
                 historyAdapter.setData(datas);
             }
         });

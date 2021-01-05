@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     ApiInterface apiInterface;
     SessionManager sessionManager;
-    LoadingDialog loadingDialog = new LoadingDialog(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

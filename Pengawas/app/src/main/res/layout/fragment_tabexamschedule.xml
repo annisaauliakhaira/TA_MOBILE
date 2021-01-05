@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".tabExamScheduleFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_examschedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#26627f"
+            app:tabTextColor="#fff">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_uts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UTS" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_uas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UAS" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_Examschedule"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

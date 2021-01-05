@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp"
-    android:background="#badbeb"
+    android:background="#F0F1F7"
     tools:context=".NewsEventActivity">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="NEWS EVENT"
+        android:text="OFFICIAL REPORT"
         android:textSize="24dp"
         android:textStyle="bold"
         android:textAlignment="center"/>
@@ -25,7 +25,7 @@
         android:id="@+id/et_news"
         android:paddingLeft="10dp"
         android:background="#fff"
-        android:hint="Type News event here ...."
+        android:hint="Type official report here ...."
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:gravity="top">
@@ -54,7 +54,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="News Event"
+            android:text="Official Report"
             android:textSize="20dp"
             android:paddingBottom="8dp"
             android:paddingLeft="8dp"/>

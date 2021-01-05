@@ -39,8 +39,8 @@ public class ExamscheduleAdapter extends RecyclerView.Adapter<ExamscheduleAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         try {
-            holder.tv_class.setText(mData.getJSONObject(position).getString("class_name"));
-            holder.tv_classId.setText(mData.getJSONObject(position).getString("class_id"));
+            holder.tv_class.setText(mData.getJSONObject(position).getString("course_name"));
+            holder.tv_classId.setText(mData.getJSONObject(position).getString("class_name"));
             holder.tv_date.setText(mData.getJSONObject(position).getString("date"));
             holder.tv_time.setText(mData.getJSONObject(position).getString("start_hour")+" - "+mData.getJSONObject(position).getString("ending_hour"));
             holder.bind(mData.getJSONObject(position), listener);

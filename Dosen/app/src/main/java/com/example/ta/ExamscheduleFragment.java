@@ -30,6 +30,7 @@ public class ExamscheduleFragment extends Fragment {
     private RecyclerView rv;
     private ExamViewModel examViewModel;
     SessionManager sessionManager;
+    private LoadingDialog loadingDialog;
 
     public ExamscheduleFragment(){
 
@@ -52,16 +53,14 @@ public class ExamscheduleFragment extends Fragment {
 
         rv =(RecyclerView) v.findViewById(R.id.rv_exam);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        LoadingDialog loadingDialog = new LoadingDialog(getActivity());
+        loadingDialog = new LoadingDialog(getActivity());
 
         ExamscheduleAdapter examAdapter = new ExamscheduleAdapter(new ExamscheduleAdapter.OnItemClickListener() {
-
             @Override
             public void onItemClick(JSONObject item) throws JSONException {
                 Intent intent = new Intent(getActivity(), ExamclassActivity.class);
                 intent.putExtra("data", item.toString());
                 startActivity(intent);
-                loadingDialog.startLoadingDialog();
             }
 
         });
@@ -74,11 +73,13 @@ public class ExamscheduleFragment extends Fragment {
         String token = User.get(sessionManager.TOKEN);
 
         examViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(ExamViewModel.class);
-        examViewModel.setExamschedule(token, "2");
-        examViewModel.getExamschedule().observe(this, new Observer<JSONArray>() {
+        loadingDialog.startLoadingDialog();
+        examViewModel.setExamUasSchedule(token);
+        examViewModel.getExamUasSchedule().observe(this, new Observer<JSONArray>() {
             @Override
             public void onChanged(JSONArray datas) {
-                    examAdapter.setData(datas);
+                loadingDialog.dismissDialog();
+                examAdapter.setData(datas);
             }
         });
     }

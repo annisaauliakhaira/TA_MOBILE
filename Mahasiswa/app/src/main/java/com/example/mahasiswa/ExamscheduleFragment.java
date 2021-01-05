@@ -30,6 +30,7 @@ public class ExamscheduleFragment extends Fragment {
     private RecyclerView rv;
     private ExamViewModel examViewModel;
     SessionManager sessionManager;
+    private LoadingDialog loadingDialog;
 
     public ExamscheduleFragment() {
 
@@ -66,15 +67,18 @@ public class ExamscheduleFragment extends Fragment {
         rv.setAdapter(examAdapter);
 
         sessionManager = new SessionManager(getContext());
+        loadingDialog = new LoadingDialog(getActivity());
         sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
 
         examViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(ExamViewModel.class);
-        examViewModel.setExamschedule(token);
-        examViewModel.getExamschedule().observe(this, new Observer<JSONArray>() {
+        loadingDialog.startLoadingDialog();
+        examViewModel.setExamUasSchedule(token);
+        examViewModel.getExamUasSchedule().observe(this, new Observer<JSONArray>() {
             @Override
             public void onChanged(JSONArray datas) {
+                loadingDialog.dismissDialog();
                 examAdapter.setData(datas);
             }
         });

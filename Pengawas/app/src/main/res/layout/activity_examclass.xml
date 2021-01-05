@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Basis Data Lanjut"
-            android:textSize="25dp"
+            android:textSize="20dp"
             android:textColor="#dbdef5"
             android:textStyle="bold"
             android:fontFamily="serif"/>

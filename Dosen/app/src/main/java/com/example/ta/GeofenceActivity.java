@@ -50,7 +50,7 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
     private GeofenceHelper geofenceHelper;
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
-    private float GEOFENCE_RADIUS = 200;
+    private float GEOFENCE_RADIUS = 15;
     private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
     private String token, id, lat, lng;
 
@@ -87,7 +87,7 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
         if (!lat.equals("0") && !lng.equals("0")){
             unand = new LatLng(Double.valueOf(lat), Double.valueOf(lng));
         }
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(unand, 16));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(unand, 20));
 
         enableUserLocation();
 

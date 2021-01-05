@@ -1,5 +1,6 @@
 package com.example.mahasiswa;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,7 +23,9 @@ public class AboutFragment extends Fragment {
     View v;
     private AboutViewModel aboutViewModel;
     SessionManager sessionManager;
-    private TextView tv_name, tv_nim, tv_email;
+    private TextView tv_name, tv_nim;
+    private CardView cv_changePass, cv_changeAvatar, cv_examSchedule, cv_examHistory;
+    private LoadingDialog loadingDialog;
 
     public AboutFragment() {
     }
@@ -29,7 +33,6 @@ public class AboutFragment extends Fragment {
     public static AboutFragment newInstance() {
         return new AboutFragment();
     }
-
 
 
     @Nullable
@@ -44,15 +47,16 @@ public class AboutFragment extends Fragment {
         super.onViewCreated(v, savedInstanceState);
         tv_name = v.findViewById(R.id.tv_name1);
         tv_nim = v.findViewById(R.id.tv_nim1);
-        tv_email = v.findViewById(R.id.tv_email);
 
 
         sessionManager = new SessionManager(getContext());
+        loadingDialog = new LoadingDialog(getActivity());
         sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         String token = User.get(sessionManager.TOKEN);
 
         aboutViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(AboutViewModel.class);
+        loadingDialog.startLoadingDialog();
         aboutViewModel.setAbout(token);
         aboutViewModel.getAbout().observe(requireActivity(), new Observer<HashMap<String, String>>() {
             @Override
@@ -60,8 +64,44 @@ public class AboutFragment extends Fragment {
                 if(stringStringHashMap.size() > 0){
                     tv_name.setText(stringStringHashMap.get(aboutViewModel.NAME));
                     tv_nim.setText("NIM. " +stringStringHashMap.get(aboutViewModel.NIM));
-                    tv_email.setText(stringStringHashMap.get(aboutViewModel.EMAIL));
                 }
+                loadingDialog.dismissDialog();
+            }
+        });
+
+        cv_changePass = (CardView) v.findViewById(R.id.cv_changePassword);
+        cv_changeAvatar = (CardView) v.findViewById(R.id.cv_changeAvatar);
+        cv_examSchedule = (CardView) v.findViewById(R.id.cv_examSchedule);
+        cv_examHistory = (CardView) v.findViewById(R.id.cv_examHistory);
+
+        cv_examSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tabExamscheduleFragment examscheduleFragment = new tabExamscheduleFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, examscheduleFragment, "findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
+
+            }
+        });
+
+        cv_examHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HistoryFragment historyFragment = new HistoryFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, historyFragment, "findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        cv_changePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                startActivity(intent);
             }
         });
     }
