@@ -1,5 +1,6 @@
 package com.example.ta;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.example.ta.Adapter.HistoryAdapter;
 import com.example.ta.ViewModel.HistoryViewModel;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -46,7 +49,14 @@ public class HistoryFragment extends Fragment {
         rv = v.findViewById(R.id.rv_history);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        HistoryAdapter historyAdapter = new HistoryAdapter();
+        HistoryAdapter historyAdapter = new HistoryAdapter(new HistoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(JSONObject item) throws JSONException {
+                Intent intent = new Intent(getActivity(), ExamHistoryActivity.class);
+                intent.putExtra("data", item.toString());
+                startActivity(intent);
+            }
+        });
         historyAdapter.notifyDataSetChanged();
         rv.setAdapter(historyAdapter);
 
@@ -58,8 +68,8 @@ public class HistoryFragment extends Fragment {
 
         historyViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(HistoryViewModel.class);
         loadingDialog.startLoadingDialog();
-        historyViewModel.setHistory(token);
-        historyViewModel.getHistory().observe(this, new Observer<JSONArray>() {
+        historyViewModel.setHistoryUas(token);
+        historyViewModel.getHistoryUas().observe(this, new Observer<JSONArray>() {
             @Override
             public void onChanged(JSONArray datas) {
                 loadingDialog.dismissDialog();

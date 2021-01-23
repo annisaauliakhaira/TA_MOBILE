@@ -52,7 +52,7 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
     private float GEOFENCE_RADIUS = 15;
     private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
-    private String token, id, lat, lng;
+    private String token, roomId, ujianId, lat, lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,8 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
 
         Intent intent = getIntent();
-        id = intent.getStringExtra("room_id");
+        roomId = intent.getStringExtra("room_id");
+        ujianId = intent.getStringExtra("id");
         lat = intent.getStringExtra("lat");
         lng = intent.getStringExtra("lng");
 
@@ -234,7 +235,7 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
         String lat = String.valueOf(latLng.latitude);
 
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseBody> saveCall = apiInterface.saveLatLong(token, id, lat, lng);
+        Call<ResponseBody> saveCall = apiInterface.saveLatLong(token, roomId, lat, lng);
         saveCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -252,7 +253,27 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
                 Toast.makeText(GeofenceActivity.this, "Failed to Save Data", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    public void removeGeofence(){
+        PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
+        geofencingClient.removeGeofences(pendingIntent)
+                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
 
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    public void onPause(){
+        super.onPause();
+        removeGeofence();
     }
 }

@@ -6,10 +6,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#badbeb">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_exam"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/load"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_row_exam" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_exam"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_row_exam" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

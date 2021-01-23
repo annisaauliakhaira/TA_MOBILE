@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.mahasiswa.API.SessionManager;
 import com.example.mahasiswa.Adapter.ExamscheduleAdapter;
@@ -31,6 +33,7 @@ public class ExamscheduleFragment extends Fragment {
     private ExamViewModel examViewModel;
     SessionManager sessionManager;
     private LoadingDialog loadingDialog;
+    String token;
 
     public ExamscheduleFragment() {
 
@@ -54,6 +57,7 @@ public class ExamscheduleFragment extends Fragment {
 
         rv =(RecyclerView) v.findViewById(R.id.rv_exam);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final SwipeRefreshLayout swipeRefreshLayout=(SwipeRefreshLayout) v.findViewById(R.id.load);
 
         ExamscheduleAdapter examAdapter = new ExamscheduleAdapter(new ExamscheduleAdapter.OnItemClickListener() {
             @Override
@@ -70,7 +74,7 @@ public class ExamscheduleFragment extends Fragment {
         loadingDialog = new LoadingDialog(getActivity());
         sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
-        String token = User.get(sessionManager.TOKEN);
+        token = User.get(sessionManager.TOKEN);
 
         examViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(ExamViewModel.class);
         loadingDialog.startLoadingDialog();
@@ -80,7 +84,18 @@ public class ExamscheduleFragment extends Fragment {
             public void onChanged(JSONArray datas) {
                 loadingDialog.dismissDialog();
                 examAdapter.setData(datas);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh()
+            {
+                examViewModel.setExamUasSchedule(token);
+            }
+        });
+
     }
 }

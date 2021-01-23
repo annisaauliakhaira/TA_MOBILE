@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.util.Log;
 
 import com.example.ta.GeofenceBroadcastReceiver;
 import com.google.android.gms.common.api.ApiException;
@@ -37,12 +38,14 @@ public class GeofenceHelper extends ContextWrapper {
                 .build();
     }
 
-    public PendingIntent getPendingIntent(){
+    public PendingIntent getPendingIntent(String ujianId, String token){
         if (pendingIntent != null){
             return pendingIntent;
         }
 
         Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
+        intent.putExtra("ujianId",ujianId);
+        intent.putExtra("token",token);
         pendingIntent = PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         return pendingIntent;
@@ -62,4 +65,6 @@ public class GeofenceHelper extends ContextWrapper {
         }
         return e.getLocalizedMessage();
     }
+
+
 }

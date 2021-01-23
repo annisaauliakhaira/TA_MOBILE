@@ -48,16 +48,15 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:text="Annisa Aulia Khaira"
-                    app:layout_constraintEnd_toStartOf="@+id/tv_presence"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_hadir"
                     app:layout_constraintStart_toEndOf="@+id/tv_studentNim"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tv_presence"
+                <ImageView
+                    android:id="@+id/iv_hadir"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="present"
-                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_check"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

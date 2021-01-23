@@ -17,6 +17,13 @@ import org.json.JSONObject;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
     private JSONArray mData = new JSONArray();
 
+    public OnItemClickListener listener;
+
+    public HistoryAdapter(OnItemClickListener listener){
+        this.listener=listener;
+    }
+
+
     public void setData(JSONArray items){
         mData = items;
         notifyDataSetChanged();
@@ -40,6 +47,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             holder.tv_presenceTotal.setText("Presence : "+mData.getJSONObject(position).getString("hadir"));
             holder.tv_absenceTotal.setText("Absence : "+mData.getJSONObject(position).getString("tidak_hadir"));
             holder.tv_permitTotal.setText("Permit : "+mData.getJSONObject(position).getString("izin"));
+            holder.bind(mData.getJSONObject(position), listener);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -68,6 +76,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             tv_absenceTotal = itemView.findViewById(R.id.tv_absenceTotal);
             tv_permitTotal = itemView.findViewById(R.id.tv_permitTotal);
         }
+
+        public void bind (final JSONObject item, final OnItemClickListener l){
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        listener.onItemClick(item);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(JSONObject item) throws JSONException;
     }
 
 }

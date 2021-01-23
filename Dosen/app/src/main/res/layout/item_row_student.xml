@@ -28,33 +28,38 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/tv_studentNim"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:paddingRight="8dp"
-                    android:text="1611521006" />
+                    android:text="1611521006"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_studentName"
-                    android:layout_width="180dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:paddingRight="30dp"
-                    android:text="Annisa Aulia Khaira" />
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Annisa Aulia Khaira"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_hadir"
+                    app:layout_constraintStart_toEndOf="@+id/tv_studentNim"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tv_presence"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:text="present"
-                    android:textAlignment="center" />
+                <ImageView
+                    android:id="@+id/iv_hadir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_check"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 

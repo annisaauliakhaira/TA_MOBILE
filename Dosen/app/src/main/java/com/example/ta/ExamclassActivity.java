@@ -1,6 +1,8 @@
 package com.example.ta;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,13 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +32,14 @@ import com.example.ta.API.ApiInterface;
 import com.example.ta.API.SessionManager;
 import com.example.ta.Adapter.ExamclassAdapter;
 import com.example.ta.ViewModel.ClassstudentViewModel;
+import com.example.ta.ViewModel.GeofenceHelper;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -37,7 +52,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -53,15 +72,24 @@ public class ExamclassActivity extends AppCompatActivity {
     private TextView tv_className, tv_classCode, tv_lecturerName, tv_dateDetail, tv_detailTime, tv_roomDetail;
     Button scan, news_event;
     ImageButton iv_geofence;
-    String id, token;
+    String id, token, lat, lng;
     ApiInterface apiInterface;
     private LoadingDialog loadingDialog;
+
+    private GeofencingClient geofencingClient;
+    private GeofenceHelper geofenceHelper;
+    private float GEOFENCE_RADIUS = 15;
+    private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
 
     private ClassstudentViewModel studentViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        geofencingClient = LocationServices.getGeofencingClient(this);
+        geofenceHelper = new GeofenceHelper(this);
+
         setContentView(R.layout.activity_examclass);
         rv_detailclass = findViewById(R.id.rv_student);
         rv_detailclass.setLayoutManager(new LinearLayoutManager(this));
@@ -150,16 +178,32 @@ public class ExamclassActivity extends AppCompatActivity {
             Intent intent = getIntent();
             JSONObject classDetail = new JSONObject(Objects.requireNonNull(intent.getStringExtra("data")));
             id = classDetail.getString("id");
+            if(statusAbsensi(classDetail.getString("waktu_masuk"))){
+                scan.setVisibility(View.GONE);
+            }
             tv_className.setText(classDetail.getString("course_name"));
             tv_classCode.setText(classDetail.getString("class_name"));
-            tv_lecturerName.setText("");
+            String lecturerName = "";
+            for (int i=0; i<classDetail.getJSONArray("lecturer").length(); i++){
+                if(i==0){
+                    lecturerName = lecturerName + classDetail.getJSONArray("lecturer").getJSONObject(i).getString("name");
+                }else{
+                    lecturerName = lecturerName + " & " + classDetail.getJSONArray("lecturer").getJSONObject(i).getString("name");
+                }
+            }
+            tv_lecturerName.setText(lecturerName);
             tv_dateDetail.setText(classDetail.getString("date"));
             tv_detailTime.setText(classDetail.getString("start_hour")+" - " + classDetail.getString("ending_hour"));
             tv_roomDetail.setText(classDetail.getString("room"));
 
             String room_id = classDetail.getString("room_id");
-            String lat = classDetail.getString("latitude");
-            String lng = classDetail.getString("longitude");
+            lat = classDetail.getString("latitude");
+            lng = classDetail.getString("longitude");
+
+            if (!lat.equals("0") && !lng.equals("0")){
+                LatLng unand = new LatLng(Double.valueOf(lat), Double.valueOf(lng));
+                addGeofence(unand);
+            }
 
             news_event = findViewById(R.id.bt_berita);
             news_event.setOnClickListener(new View.OnClickListener() {
@@ -189,6 +233,7 @@ public class ExamclassActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ExamclassActivity.this, GeofenceActivity.class);
+                    intent.putExtra("id", id);
                     intent.putExtra("room_id", room_id);
                     intent.putExtra("lat", lat);
                     intent.putExtra("lng", lng);
@@ -217,6 +262,7 @@ public class ExamclassActivity extends AppCompatActivity {
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                scan.performClick();
                                 dialog.dismiss();
                             }
                         });
@@ -245,27 +291,35 @@ public class ExamclassActivity extends AppCompatActivity {
                     JSONObject jsonRESULTS = null;
                     try {
                         jsonRESULTS = new JSONObject(response.body().string());
+                        String pesan = jsonRESULTS.getString("pesan");
                         JSONObject jsonData = jsonRESULTS.getJSONObject("data");
-                        String presenceStatus = jsonData.getString("presence_status");
-                        String keterangan = "Sudah Mengambil Presensi";
-                        if (presenceStatus.equals("0")){
-                            keterangan = "Belum Ujian";
-                        }else if (presenceStatus.equals("1")){
-                            keterangan = "Sudah Ujian";
-                        }else if (presenceStatus.equals("2")){
-                            keterangan = "Tidak Ujian";
-                        }
+                        String nama = jsonData.getString("student_name");
+                        String nim = jsonData.getString("nim");
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(ExamclassActivity.this).create();
-                        alertDialog.setTitle("Presence Results");
-                        alertDialog.setMessage(keterangan);
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        alertDialog.show();
+                        final Dialog dialog = new Dialog(ExamclassActivity.this);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setCancelable(false);
+                        dialog.setContentView(R.layout.scan_dialog);
+                        TextView tv_name = (TextView) dialog.findViewById(R.id.tv_nameResult);
+                        TextView tv_nim = (TextView) dialog.findViewById(R.id.tv_nimResult);
+                        ImageView iv_precent = (ImageView) dialog.findViewById(R.id.iv_presenceResult);
+                        Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok_scan);
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                scan.performClick();
+                                dialog.dismiss();
+                            }
+                        });
+                        tv_name.setText(nama);
+                        tv_nim.setText(nim);
+                        if(pesan.equals("-")){
+                            iv_precent.setImageResource(R.drawable.ic_check);
+                        }else{
+                            iv_precent.setImageResource(R.drawable.ic_cross);
+                        }
+                        dialog.show();
+                        studentViewModel.setStudentclass(token, id);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -296,6 +350,83 @@ public class ExamclassActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void addGeofence(LatLng latLng) {
+        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, GEOFENCE_RADIUS,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
+        GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(geofence);
+        PendingIntent pendingIntent = geofenceHelper.getPendingIntent(id, token);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        GeofencingClient geofencingClient = LocationServices.getGeofencingClient(this);
+        geofencingClient.addGeofences(geofencingRequest, pendingIntent)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        String errorMessage = geofenceHelper.getErrorString(e);
+
+                    }
+                });
+    }
+
+    public boolean statusAbsensi(String mWaktu_mulai){
+        Log.e("aaaa", "statusAbsensi: "+ mWaktu_mulai);
+        if(!mWaktu_mulai.equals("null")){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy HH:mm:ss");
+            Log.e("aaaa", "statusAbsensi: "+ simpleDateFormat.format(Calendar.getInstance().getTime()));
+
+            try {
+                Date waktu_sekarang = simpleDateFormat.parse(simpleDateFormat.format(Calendar.getInstance().getTime()));
+                Date waktu_mulai = simpleDateFormat.parse(mWaktu_mulai);
+
+                long different = waktu_sekarang.getTime() - (waktu_mulai.getTime() + (1000 * 60 * 15));
+                if(different < 0){
+                    return false;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return true;
+    }
+
+    public void removeGeofence(){
+        if (!lat.equals("0") && !lng.equals("0")){
+            PendingIntent pendingIntent = geofenceHelper.getPendingIntent(id, token);
+            geofencingClient.removeGeofences(pendingIntent)
+            .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+
+                }
+            })
+            .addOnFailureListener(this, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+        }
+    }
+
+    public void onPause(){
+        super.onPause();
     }
 
 }

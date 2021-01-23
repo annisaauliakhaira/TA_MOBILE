@@ -37,11 +37,17 @@ public interface ApiInterface {
     @POST("lecturer/examschedule")
     Call<ResponseBody> getExamschedule(@Header("Authorization") String authToken, @Field("examtype_id") String examtype_id);
 
+    @POST("lecturer/examschedule/{id}")
+    Call<ResponseBody> examScheduleUpdateStatus(@Header("Authorization") String authToken, @Path("id") String id);
+
     @POST("lecturer/details")
     Call<ResponseBody>getDetail(@Header("Authorization") String authToken);
 
     @POST("lecturer/examclass/{id}")
     Call<ResponseBody>getDetailKelas(@Header("Authorization") String authToken, @Path("id") String examclass_id);
+
+    @POST("lecturer/PresenceHistory/{id}")
+    Call<ResponseBody>getDetailPresence(@Header("Authorization") String authToken, @Path("id") String exam_id);
 
     @FormUrlEncoded
     @POST("lecturer/saveNews/{exam_id}")
@@ -67,13 +73,11 @@ public interface ApiInterface {
     @POST("lecturer/presence")
     Call<ResponseBody>getPresence(@Header("Authorization") String authToken, @Field("code") String code);
 
+    @FormUrlEncoded
     @POST("lecturer/getHistory")
-    Call<ResponseBody>getHistory(@Header("Authorization") String authToken);
+    Call<ResponseBody>getHistory(@Header("Authorization") String authToken, @Field("type_id") String examtype_id);
 
     @POST("lecturer/updateManual/{code}/{presence_status}")
     Call<ResponseBody>UpdateManual(@Header("Authorization") String authToken, @Path("code") String id, @Path("presence_status") String presence_status);
 
-    @FormUrlEncoded
-    @POST("lecturer/saveLatLong/{id}")
-    Call<ResponseBody>saveLatLong(@Header("Authorization") String authToken, @Path("id") String id, @Field("lat")String lat, @Field("lng")String lng);
 }

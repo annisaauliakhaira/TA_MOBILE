@@ -24,8 +24,6 @@ public class ClassstudentViewModel extends ViewModel {
     private ApiInterface apiInterface;
     private MutableLiveData<JSONArray> listStudent = new MutableLiveData<>();
 
-
-
     public void setStudentclass(String token, String id){
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ResponseBody> studentCall = apiInterface.getDetailKelas(token, id);

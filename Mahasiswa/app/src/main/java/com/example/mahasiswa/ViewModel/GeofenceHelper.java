@@ -37,12 +37,15 @@ public class GeofenceHelper extends ContextWrapper {
                 .build();
     }
 
-    public PendingIntent getPendingIntent(){
+    public PendingIntent getPendingIntent(String code, String classId, String token){
         if (pendingIntent != null){
             return pendingIntent;
         }
 
         Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
+        intent.putExtra("code",code);
+        intent.putExtra("classId",classId);
+        intent.putExtra("token",token);
         pendingIntent = PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return  pendingIntent;
     }

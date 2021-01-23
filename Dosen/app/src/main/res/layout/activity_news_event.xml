@@ -1,77 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="15dp"
     android:background="#F0F1F7"
     tools:context=".NewsEventActivity">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="10dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="OFFICIAL REPORT"
-        android:textSize="24dp"
-        android:textStyle="bold"
-        android:textAlignment="center"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="20dp"/>
-    <EditText
-        android:id="@+id/et_news"
-        android:paddingLeft="10dp"
-        android:background="#fff"
-        android:hint="Type official report here ...."
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:gravity="top">
-    </EditText>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="10dp"/>
-    <Button
-        android:id="@+id/bt_saveNews"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#d67601"
-        android:text="SAVE"
-        android:textColor="#fff"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="10dp"/>
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_weight="0.5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="5dp"
-        android:background="@drawable/border2">
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Official Report"
-            android:textSize="20dp"
-            android:paddingBottom="8dp"
-            android:paddingLeft="8dp"/>
+            android:text="OFFICIAL REPORT"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/border2"
+            android:layout_height="20dp"/>
+        <EditText
+            android:id="@+id/et_news"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            >
+            android:background="#fff"
+            android:hint="Type official report here ...."
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="top">
+        </EditText>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+        <Button
+            android:id="@+id/bt_saveNews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#d67601"
+            android:text="SAVE"
+            android:textColor="#fff"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_news_event"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="5dp"
+            android:background="@drawable/border2">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Official Report"
+                android:textSize="20dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"/>
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:listitem="@layout/item_row_newsevent"/>
-        </RelativeLayout>
+                android:background="@drawable/border2"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_news_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/item_row_newsevent"/>
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_download"
+        android:tint="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_download"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

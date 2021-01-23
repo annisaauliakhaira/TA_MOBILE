@@ -3,6 +3,7 @@ package com.example.ta.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,15 +41,13 @@ public class ExamclassAdapter extends RecyclerView.Adapter<ExamclassAdapter.MyVi
             holder.tv_studentNim.setText(mData.getJSONObject(position).getString("nim"));
             holder.tv_studentName.setText(mData.getJSONObject(position).getString("name"));
             String presence_status = mData.getJSONObject(position).getString("presence_status");
-            String keterangan = "Status Not Found";
             if (presence_status.equals("0")){
-                keterangan = "Absence";
+                holder.iv_hadir.setImageResource(R.drawable.ic_cross);
             }else if (presence_status.equals("1")){
-                keterangan = "Presence";
+                holder.iv_hadir.setImageResource(R.drawable.ic_check);
             }else if (presence_status.equals("2")){
-                keterangan = "Permit";
+                holder.iv_hadir.setImageResource(R.drawable.ic_permit);
             }
-            holder.tv_presence.setText(keterangan);
             holder.bind(mData.getJSONObject(position), listener);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -63,15 +62,13 @@ public class ExamclassAdapter extends RecyclerView.Adapter<ExamclassAdapter.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_studentNim;
         private TextView tv_studentName;
-        private TextView tv_presence;
+        private ImageView iv_hadir;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_studentNim = (TextView) itemView.findViewById(R.id.tv_studentNim);
             tv_studentName = (TextView) itemView.findViewById(R.id.tv_studentName);
-            tv_presence = (TextView) itemView.findViewById(R.id.tv_presence);
-
-
+            iv_hadir = (ImageView) itemView.findViewById(R.id.iv_hadir);
 
         }
 

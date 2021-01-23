@@ -63,7 +63,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("staff/presence")
-    Call<ResponseBody>getPresence(@Header("Authorization") String authToken, @Path("code") String code);
+    Call<ResponseBody>getPresence(@Header("Authorization") String authToken, @Field("code") String code);
 
     @POST("staff/updateManual/{code}/{presence_status}")
     Call<ResponseBody>UpdateManual(@Header("Authorization") String authToken, @Path("code") String id, @Path("presence_status") String presence_status);

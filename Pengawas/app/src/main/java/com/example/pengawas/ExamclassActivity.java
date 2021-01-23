@@ -1,6 +1,8 @@
 package com.example.pengawas;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,11 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,6 +32,14 @@ import com.example.pengawas.API.ApiInterface;
 import com.example.pengawas.API.SessionManager;
 import com.example.pengawas.Adapter.ExamclassAdapter;
 import com.example.pengawas.ViewModel.ClassstudentViewModel;
+import com.example.pengawas.ViewModel.GeofenceHelper;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -38,6 +52,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -53,15 +71,24 @@ public class ExamclassActivity extends AppCompatActivity {
     private TextView tv_className, tv_classCode, tv_lecturerName, tv_dateDetail, tv_detailTime, tv_roomDetail;
     Button bt_scan, bt_newsevent;
     ImageButton iv_geofence;
-    String id, token;
+    String id, token, lat, lng;
     ApiInterface apiInterface;
     private LoadingDialog loadingDialog;
+
+    private GeofencingClient geofencingClient;
+    private GeofenceHelper geofenceHelper;
+    private float GEOFENCE_RADIUS = 15;
+    private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
 
     private ClassstudentViewModel studentViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        geofencingClient = LocationServices.getGeofencingClient(this);
+        geofenceHelper = new GeofenceHelper(this);
+
         setContentView(R.layout.activity_examclass);
         rv_detailclass = findViewById(R.id.rv_student);
         rv_detailclass.setLayoutManager(new LinearLayoutManager(this));
@@ -83,42 +110,6 @@ public class ExamclassActivity extends AppCompatActivity {
         bt_scan = findViewById(R.id.bt_absen);
 
         loadingDialog.startLoadingDialog();
-
-        ExamclassAdapter iAdapter = new ExamclassAdapter(new ExamclassAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(JSONObject item) throws JSONException {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ExamclassActivity.this);
-                builder.setTitle("Choose Action");
-                    // add a radio button list'
-                String[] action = {"Absence", "Presence", "Permit"};
-                int checkedItem = item.getInt("presence_status"); // absence
-                builder.setSingleChoiceItems(action, checkedItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                    // add OK and Cancel buttons
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            String presence_code = item.getString("presence_code");
-                            int selectedStatus = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
-                            updateManual(presence_code, String.valueOf(selectedStatus));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                builder.setNegativeButton("Cancel", null);
-                // create and show the alert dialog
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        });
-
-        iAdapter.notifyDataSetChanged();
-        rv_detailclass.setAdapter(iAdapter);
 
         bt_scan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,16 +141,68 @@ public class ExamclassActivity extends AppCompatActivity {
             Intent intent = getIntent();
             JSONObject classDetail = new JSONObject(Objects.requireNonNull(intent.getStringExtra("data")));
             id = classDetail.getString("id");
+            if(statusAbsensi(classDetail.getString("waktu_masuk"))){
+                bt_scan.setVisibility(View.GONE);
+            }
+            ExamclassAdapter iAdapter = new ExamclassAdapter(new ExamclassAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(JSONObject item) throws JSONException {
+                    if (!statusAbsensi(classDetail.getString("waktu_masuk"))) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ExamclassActivity.this);
+                        builder.setTitle("Choose Action");
+                        String[] action ={"Absence", "Presence", "Permit"};
+                        int checkedItem = item.getInt("presence_status");
+                        builder.setSingleChoiceItems(action, checkedItem, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    String presence_code = item.getString("presence_code");
+                                    int selectedStatus =((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                                    updateManual(presence_code, String.valueOf(selectedStatus));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton("Cancel", null);
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                }
+            });
+
+            iAdapter.notifyDataSetChanged();
+            rv_detailclass.setAdapter(iAdapter);
+
             tv_className.setText(classDetail.getString("course_name"));
-            tv_classCode.setText(classDetail.getString("class_name"));
-            tv_lecturerName.setText("");
+            tv_classCode.setText(classDetail.getString("class_name"));String lecturerName = "";
+            for (int i=0; i<classDetail.getJSONArray("lecturer").length(); i++){
+                if(i==0){
+                    lecturerName = lecturerName + classDetail.getJSONArray("lecturer").getJSONObject(i).getString("name");
+                }else{
+                    lecturerName = lecturerName + " & " + classDetail.getJSONArray("lecturer").getJSONObject(i).getString("name");
+                }
+            }
+            tv_lecturerName.setText(lecturerName);
             tv_dateDetail.setText(classDetail.getString("date"));
             tv_detailTime.setText(classDetail.getString("start_hour")+" - " + classDetail.getString("ending_hour"));
             tv_roomDetail.setText(classDetail.getString("room"));
 
             String room_id = classDetail.getString("room_id");
-            String lat = classDetail.getString("latitude");
-            String lng = classDetail.getString("longitude");
+            lat = classDetail.getString("latitude");
+            lng = classDetail.getString("longitude");
+
+            if (!lat.equals("0") && !lng.equals("0")){
+                LatLng unand = new LatLng(Double.valueOf(lat), Double.valueOf(lng));
+                addGeofence(unand);
+            }
 
             bt_newsevent = findViewById(R.id.bt_berita);
             bt_newsevent.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +213,6 @@ public class ExamclassActivity extends AppCompatActivity {
                             Intent intent = new Intent(ExamclassActivity.this, NewsEventActivity.class);
                             intent.putExtra("data", id);
                             startActivity(intent);
-                            loadingDialog.startLoadingDialog();
                     }
                 }
             });
@@ -189,6 +231,7 @@ public class ExamclassActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ExamclassActivity.this, GeofenceActivity.class);
+                    intent.putExtra("id", id);
                     intent.putExtra("room_id", room_id);
                     intent.putExtra("lat", lat);
                     intent.putExtra("lng", lng);
@@ -219,6 +262,7 @@ public class ExamclassActivity extends AppCompatActivity {
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                bt_scan.performClick();
                                 dialog.dismiss();
                             }
                         });
@@ -247,31 +291,35 @@ public class ExamclassActivity extends AppCompatActivity {
                     JSONObject jsonRESULTS = null;
                     try {
                         jsonRESULTS = new JSONObject(response.body().string());
-                        JSONObject data = jsonRESULTS.getJSONObject("data");
-                        String student_name = "Name: "+data.getString("student_name");
-                        String nim = "NIM: " + data.getString("nim");
-                        String presenceStatus = "Presence Status: " +data.getString("presence_status");
-                        String keterangan = "Status Not Found";
-                        if (presenceStatus.equals("0")){
-                            keterangan = "Belum Ujian";
-                        }else if (presenceStatus.equals("1")){
-                            keterangan = "Sudah Ujian";
-                        }else if (presenceStatus.equals("2")){
-                            keterangan = "Tidak Ujian";
-                        }
+                        String pesan = jsonRESULTS.getString("pesan");
+                        JSONObject jsonData = jsonRESULTS.getJSONObject("data");
+                        String nama = jsonData.getString("student_name");
+                        String nim = jsonData.getString("nim");
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(ExamclassActivity.this).create();
-                        alertDialog.setTitle("Presence result");
-                        alertDialog.setMessage(student_name);
-                        alertDialog.setMessage(nim);
-                        alertDialog.setMessage(keterangan);
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        alertDialog.show();
+                        final Dialog dialog = new Dialog(ExamclassActivity.this);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setCancelable(false);
+                        dialog.setContentView(R.layout.scan_dialog);
+                        TextView tv_name = (TextView) dialog.findViewById(R.id.tv_nameResult);
+                        TextView tv_nim = (TextView) dialog.findViewById(R.id.tv_nimResult);
+                        ImageView iv_precent = (ImageView) dialog.findViewById(R.id.iv_presenceResult);
+                        Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok_scan);
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                bt_scan.performClick();
+                            }
+                        });
+                        tv_name.setText(nama);
+                        tv_nim.setText(nim);
+                        if(pesan.equals("-")){
+                            iv_precent.setImageResource(R.drawable.ic_check);
+                        }else{
+                            iv_precent.setImageResource(R.drawable.ic_cross);
+                        }
+                        dialog.show();
+                        studentViewModel.setStudentClass(token, id);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -287,16 +335,14 @@ public class ExamclassActivity extends AppCompatActivity {
         });
     }
 
-    public void updateManual(String presence_code, String presence_status){
+    public void updateManual(String  presence_code, String presence_status){
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ResponseBody> presenceCall = apiInterface.UpdateManual(token, presence_code, presence_status);
         presenceCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()){
-                    Toast.makeText(ExamclassActivity.this, "Update Data is Success", Toast.LENGTH_SHORT).show();
-                    studentViewModel.setStudentClass(token, id);
-                }
+                Toast.makeText(ExamclassActivity.this, "Update Data is Success", Toast.LENGTH_SHORT).show();
+                studentViewModel.setStudentClass(token, id);
             }
 
             @Override
@@ -305,4 +351,79 @@ public class ExamclassActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void addGeofence(LatLng latLng) {
+        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, GEOFENCE_RADIUS,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
+        GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(geofence);
+        PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        GeofencingClient geofencingClient = LocationServices.getGeofencingClient(this);
+        geofencingClient.addGeofences(geofencingRequest, pendingIntent)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        String errorMessage = geofenceHelper.getErrorString(e);
+
+                    }
+                });
+    }
+
+    public void removeGeofence(){
+        if (!lat.equals("0") && !lng.equals("0")){
+            PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
+            geofencingClient.removeGeofences(pendingIntent)
+                    .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+        }
+    }
+
+    public boolean statusAbsensi(String mWaktu_mulai){
+        if(!mWaktu_mulai.equals("null")){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy HH:mm:ss");
+            try {
+                Date waktu_sekarang = simpleDateFormat.parse(simpleDateFormat.format(Calendar.getInstance().getTime()));
+                Date waktu_mulai = simpleDateFormat.parse(mWaktu_mulai);
+                long different = waktu_sekarang.getTime() - (waktu_mulai.getTime() + (1000 * 60 * 15));
+                if(different < 0){
+                    return false;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return true;
+    }
+
+    public void onPause(){
+        super.onPause();
+        removeGeofence();
+    }
+
 }

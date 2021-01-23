@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -40,31 +43,34 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GeofenceActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+public class GeofenceActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "GeofenceActivity";
 
     ApiInterface apiInterface;
     SessionManager sessionManager;
+
     private GoogleMap mMap;
     private GeofencingClient geofencingClient;
     private GeofenceHelper geofenceHelper;
+
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
     private float GEOFENCE_RADIUS = 15;
     private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
-    private String token, id, lat, lng;
+
+    private String token, roomId, ujianId, lat, lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geofence);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         Intent intent = getIntent();
-        id = intent.getStringExtra("room_id");
+        roomId = intent.getStringExtra("room_id");
+        ujianId = intent.getStringExtra("id");
         lat = intent.getStringExtra("lat");
         lng = intent.getStringExtra("lng");
 
@@ -72,7 +78,6 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
         sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
         token = User.get(sessionManager.TOKEN);
-
 
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
@@ -90,10 +95,6 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(unand, 20));
 
         enableUserLocation();
-
-        //hapus
-        mMap.setOnMapLongClickListener(this);
-        //hapus
 
         initLocation();
     }
@@ -154,41 +155,10 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
         }
     }
 
-    //hapus
-    @Override
-    public void onMapLongClick(LatLng latLng) {
-        if (Build.VERSION.SDK_INT >= 29){
-            //Background Permission
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)== PackageManager.PERMISSION_GRANTED){
-                handleMapLongClick(latLng);
-            }
-            else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)){
-                    //show dialog and ask for permission
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
-                }else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
-                }
-            }
-        }else {
-            handleMapLongClick(latLng);
-        }
-    }
-
-    private void handleMapLongClick(LatLng latLng){
-        mMap.clear();
-        addMarker(latLng);
-        addCircle(latLng, GEOFENCE_RADIUS);
-        addGeofence(latLng, GEOFENCE_RADIUS);
-        updateLocation(latLng);
-    }
-    //hapus
-
     private void addGeofence(LatLng latLng, float radius) {
-        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius,
-                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
+        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius,Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
         GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(geofence);
-        PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
+        PendingIntent pendingIntent = geofenceHelper.getPendingIntent(ujianId, token);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -231,31 +201,25 @@ public class GeofenceActivity extends FragmentActivity implements OnMapReadyCall
         mMap.addCircle(circleOptions);
     }
 
-    //hapus
-    private void updateLocation(LatLng latLng){
-        String lng = String.valueOf(latLng.longitude);
-        String lat = String.valueOf(latLng.latitude);
+    public void removeGeofence(){
+        PendingIntent pendingIntent = geofenceHelper.getPendingIntent(ujianId, token);
+        geofencingClient.removeGeofences(pendingIntent)
+                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
 
-        apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseBody> saveCall = apiInterface.saveLatLong(token, id, lat, lng);
-        saveCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()){
-                    Toast.makeText(GeofenceActivity.this, "Save Data Success", Toast.LENGTH_SHORT).show();
-                }else {
-                    Log.e(TAG, "onFailure: "+response.code());
-                    Toast.makeText(GeofenceActivity.this, "Failed to Save Data", Toast.LENGTH_SHORT).show();
-                }
-            }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(TAG, "onFailure: "+t.getMessage());
-                Toast.makeText(GeofenceActivity.this, "Failed to Save Data", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+                    }
+                });
     }
-    //hapus
+
+    public void onPause(){
+        super.onPause();
+//        removeGeofence();
+    }
 }

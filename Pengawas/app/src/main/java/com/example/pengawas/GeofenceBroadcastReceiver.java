@@ -6,20 +6,26 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.pengawas.API.ApiClient;
+import com.example.pengawas.API.ApiInterface;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
     private  static final String TAG = "GeofenceBroadcastReceiv";
+    private NotificationHelper notificationHelper;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
-        // an Intent broadcast.
-//        Toast.makeText(context, "Geofence triggered...", Toast.LENGTH_SHORT).show();
-        NotificationHelper notificationHelper = new NotificationHelper(context);
+        notificationHelper = new NotificationHelper(context);
 
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()){

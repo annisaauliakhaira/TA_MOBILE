@@ -66,9 +66,7 @@ public class AboutFragment extends Fragment {
         });
 
         cv_changePass = (CardView) v.findViewById(R.id.cv_changePassword);
-        cv_changeAvatar = (CardView) v.findViewById(R.id.cv_changeAvatar);
         cv_examSchedule = (CardView) v.findViewById(R.id.cv_examSchedule);
-        cv_examHistory = (CardView) v.findViewById(R.id.cv_examHistory);
 
         cv_examSchedule.setOnClickListener(new View.OnClickListener() {
             @Override

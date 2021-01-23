@@ -67,7 +67,6 @@ public class AboutFragment extends Fragment {
         });
 
         cv_changePass = (CardView) v.findViewById(R.id.cv_changePassword);
-        cv_changeAvatar = (CardView) v.findViewById(R.id.cv_changeAvatar);
         cv_examSchedule = (CardView) v.findViewById(R.id.cv_examSchedule);
         cv_examHistory = (CardView) v.findViewById(R.id.cv_examHistory);
 
@@ -86,9 +85,9 @@ public class AboutFragment extends Fragment {
         cv_examHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HistoryFragment historyFragment = new HistoryFragment();
+                tabHistoryFragment tabHistoryFragment = new tabHistoryFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, historyFragment, "findThisFragment")
+                        .replace(R.id.fragment_container, tabHistoryFragment, "findThisFragment")
                         .addToBackStack(null)
                         .commit();
             }

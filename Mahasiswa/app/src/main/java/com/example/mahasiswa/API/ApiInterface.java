@@ -31,8 +31,16 @@ public interface ApiInterface {
     );
 
     @FormUrlEncoded
+    @POST("student/examhistory")
+    Call<ResponseBody>getHistory(@Header("Authorization") String authToken,  @Field("examtype_id") String examtype_id);
+
+    @FormUrlEncoded
     @POST("student/examschedule")
     Call<ResponseBody>getExamschedule(@Header("Authorization") String authToken,  @Field("examtype_id") String examtype_id);
+
+    @FormUrlEncoded
+    @POST("student/waktuMasukPresence")
+    Call<ResponseBody>updateWaktuPresence(@Header("Authorization") String authToken,  @Field("code") String code, @Field("class_id") String class_id, @Field("type") String type);
 
     @POST("student/details")
     Call<ResponseBody>getDetail(@Header("Authorization") String authToken);

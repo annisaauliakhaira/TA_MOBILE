@@ -22,11 +22,12 @@ import retrofit2.Response;
 
 public class HistoryViewModel extends ViewModel {
     ApiInterface apiInterface;
-    private MutableLiveData<JSONArray> listHistory = new MutableLiveData<>();
+    private MutableLiveData<JSONArray> listHistoryUts = new MutableLiveData<>();
+    private MutableLiveData<JSONArray> listHistoryUas = new MutableLiveData<>();
 
-    public void setHistory(String token){
+    public void setHistoryUts(String token){
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseBody> historyCall = apiInterface.getHistory(token);
+        Call<ResponseBody> historyCall = apiInterface.getHistory(token, "1");
         historyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -35,7 +36,7 @@ public class HistoryViewModel extends ViewModel {
                     try {
                         jsonRESULTS = new JSONObject(response.body().string());
                         JSONArray histories = jsonRESULTS.getJSONArray("data");
-                        listHistory.postValue(histories);
+                        listHistoryUts.postValue(histories);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -51,7 +52,39 @@ public class HistoryViewModel extends ViewModel {
         });
     }
 
-    public LiveData<JSONArray> getHistory(){
-        return listHistory;
+    public void setHistoryUas(String token){
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseBody> historyCall = apiInterface.getHistory(token, "2");
+        historyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                    JSONObject jsonRESULTS = null;
+                    try {
+                        jsonRESULTS = new JSONObject(response.body().string());
+                        JSONArray histories = jsonRESULTS.getJSONArray("data");
+                        listHistoryUas.postValue(histories);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("eror view model",t.getMessage());
+            }
+        });
+    }
+
+    public LiveData<JSONArray> getHistoryUts(){
+        return listHistoryUts;
+    }
+
+
+    public LiveData<JSONArray> getHistoryUas(){
+        return listHistoryUas;
     }
 }

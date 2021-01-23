@@ -82,7 +82,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     et_oldPassword.setText("");
                     et_newPassword.setText("");
                     et_confirmPassword.setText("");
-                    sessionManager.isLogin();
+                    Intent intent =  new Intent(ChangePasswordActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }else {
                     Toast.makeText(ChangePasswordActivity.this, "Gagal Change Password", Toast.LENGTH_SHORT).show();
                 }

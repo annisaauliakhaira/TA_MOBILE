@@ -9,66 +9,100 @@
     android:background="#badbeb"
     tools:context=".ExamclassActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.3"
-        android:padding="15dp"
-        android:background="#1380ae">
+        android:layout_height="wrap_content"
+        android:background="#1380ae"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/tv_className"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="serif"
             android:text="Basis Data Lanjut"
-            android:textSize="20dp"
             android:textColor="#dbdef5"
+            android:textSize="20dp"
             android:textStyle="bold"
-            android:fontFamily="serif"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_classCode"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="serif"
             android:text="A303"
-            android:textSize="16dp"
             android:textColor="#dbdef5"
-            android:fontFamily="serif"/>
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_className" />
+
         <TextView
             android:id="@+id/tv_lectuerName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="text Husnil Kamil, M.T"
-            android:textSize="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:fontFamily="serif"
-            android:textColor="#dbdef5"/>
+            android:text="text Husnil Kamil, M.T"
+            android:textColor="#dbdef5"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_classCode" />
+
         <TextView
             android:id="@+id/tv_dateDetail"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="serif"
             android:text="25-08-2020"
-            android:textSize="16dp"
             android:textColor="#dbdef5"
-            android:fontFamily="serif"/>
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_lectuerName" />
+
         <TextView
             android:id="@+id/tv_timeDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="serif"
             android:text="08.00 - 09.30"
             android:textColor="#dbdef5"
             android:textSize="16dp"
-            android:fontFamily="serif"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dateDetail" />
+
         <TextView
             android:id="@+id/tv_roomDetail"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="serif"
             android:text="H.1.2"
             android:textColor="#dbdef5"
             android:textSize="16dp"
-            android:fontFamily="serif"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_timeDetail" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -92,39 +126,43 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/bt_absen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Take Presence"
             android:backgroundTint="#d67601"
+            android:drawableStart="@drawable/scan"
+            android:text="Take Presence"
             android:textColor="#fff"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:drawableStart="@drawable/scan"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <Button
             android:id="@+id/bt_berita"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="News Event"
-            android:layout_marginLeft="3dp"
             android:backgroundTint="#1380ae"
             android:drawableStart="@drawable/ic_news"
-            android:textColor="#fff"/>
-        <RelativeLayout
-            android:layout_width="50dp"
-            android:layout_height="match_parent"/>
+            android:text="News Event"
+            android:textColor="#fff"
+            app:layout_constraintEnd_toStartOf="@+id/iv_geofence"
+            app:layout_constraintStart_toEndOf="@+id/bt_absen"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/iv_geofence"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:backgroundTint="#2b8b28"
             android:src="@drawable/ic_geofence"
-            android:backgroundTint="#2b8b28" />
-    </LinearLayout>
+            app:layout_constraintStart_toEndOf="@+id/bt_berita"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

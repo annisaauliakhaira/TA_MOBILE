@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -9,19 +11,22 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     android:background="#badbeb">
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:backgroundTint="#fff"
         android:background="@drawable/border2"
         android:padding="8dp">
+
         <TextView
             android:id="@+id/tv_newsData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Mahasiswa dengan nim 1611522012 berdiskusi dengan mahasiswa dengan nim 1611521006 selma ujian berlangsung"
-            android:textSize="16dp"/>
-    </LinearLayout>
+            android:textSize="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

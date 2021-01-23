@@ -59,6 +59,7 @@
             android:background="@drawable/form"
             android:drawableStart="@drawable/ic_about"
             android:hint=" Username"
+            android:text="1711523011"
             android:layout_width="match_parent"
             android:layout_height="50dp">
         </EditText>
@@ -73,6 +74,7 @@
             android:background="@drawable/form"
             android:drawableStart="@drawable/ic_password"
             android:hint=" Password"
+            android:text="student123"
             android:ems="10"
             android:inputType="textPassword"
             android:layout_width="match_parent"
