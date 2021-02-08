@@ -409,7 +409,7 @@ public class ExamclassActivity extends AppCompatActivity {
             try {
                 Date waktu_sekarang = simpleDateFormat.parse(simpleDateFormat.format(Calendar.getInstance().getTime()));
                 Date waktu_mulai = simpleDateFormat.parse(mWaktu_mulai);
-                long different = waktu_sekarang.getTime() - (waktu_mulai.getTime() + (1000 * 60 * 15));
+                long different = waktu_sekarang.getTime() - (waktu_mulai.getTime() + (1000 * 60 * 10));
                 if(different < 0){
                     return false;
                 }

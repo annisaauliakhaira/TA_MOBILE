@@ -183,7 +183,7 @@ public class ExamHistoryActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }catch (Exception e){
-            Toast.makeText(this, "Somethink went wrong!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
         }
     }
 

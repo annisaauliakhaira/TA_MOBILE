@@ -25,7 +25,6 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".ExamHistoryActivity"
             android:theme="@style/Theme.TA.NoActionBar"></activity>
-        <activity android:name=".ExaminationRulesActivity" />
         <activity android:name=".NotificationActivity" />
         <activity
             android:name=".ChangePasswordActivity"

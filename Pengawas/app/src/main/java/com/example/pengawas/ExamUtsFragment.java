@@ -30,6 +30,7 @@ public class ExamUtsFragment extends Fragment {
     private ExamViewModel examViewModel;
     SessionManager sessionManager;
     private LoadingDialog loadingDialog;
+    String token;
 
     public ExamUtsFragment() {
         // Required empty public constructor
@@ -69,11 +70,9 @@ public class ExamUtsFragment extends Fragment {
         sessionManager = new SessionManager(getContext());
         sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
-        String token = User.get(sessionManager.TOKEN);
+        token = User.get(sessionManager.TOKEN);
 
         examViewModel = new ViewModelProvider(getActivity(), new ViewModelProvider.NewInstanceFactory()).get(ExamViewModel.class);
-        loadingDialog.startLoadingDialog();
-        examViewModel.setExamUtsSchedule(token);
         examViewModel.getExamUtsSchedule().observe(this, new Observer<JSONArray>() {
             @Override
             public void onChanged(JSONArray datas) {
@@ -81,5 +80,11 @@ public class ExamUtsFragment extends Fragment {
                 examscheduleAdapter.setData(datas);
             }
         });
+    }
+
+    public void onResume() {
+        super.onResume();
+        loadingDialog.startLoadingDialog();
+        examViewModel.setExamUtsSchedule(token);
     }
 }

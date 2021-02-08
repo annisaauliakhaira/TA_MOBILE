@@ -47,7 +47,6 @@ public class GeofenceHelper extends ContextWrapper {
         intent.putExtra("ujianId",ujianId);
         intent.putExtra("token",token);
         pendingIntent = PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         return pendingIntent;
     }
 
@@ -65,6 +64,5 @@ public class GeofenceHelper extends ContextWrapper {
         }
         return e.getLocalizedMessage();
     }
-
 
 }

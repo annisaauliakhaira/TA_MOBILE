@@ -225,6 +225,7 @@ public class NewsEventActivity extends AppCompatActivity {
             if(manager != null){
                 DownloadManager.Request request = new DownloadManager.Request(downloadUri);
                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+//                        .addRequestHeader("Authorization", "Basic " + encodedCredentials) // untuk login
                         .setTitle(id+".pdf")
                         .setDescription("Download File")
                         .setAllowedOverMetered(true)
