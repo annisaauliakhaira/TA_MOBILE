@@ -47,7 +47,7 @@ import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
 public class ExamcardActivity extends AppCompatActivity implements OnMapReadyCallback  {
-    ImageView iv_qrcode;
+    ImageView iv_qrcode, img_mahasiswa;
     TextView tv_course, tv_date, tv_presenceStatus, tv_studentName, tv_studentNim, tv_roomCard,
             tv_timeCard, tv_timeCard2, tv_className, tv_examtype, tv_lecturerName;
     JSONObject data;

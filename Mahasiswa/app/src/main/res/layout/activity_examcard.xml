@@ -25,31 +25,40 @@
             android:orientation="vertical"
             android:padding="15dp">
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_mahasiswaCard"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/logo_unand"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/tv_course"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="serif"
                 android:text="text Basis Data Lanjut"
-                android:textAlignment="center"
                 android:textColor="#ffffff"
-                android:textSize="20dp"
+                android:textSize="16dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_mahasiswaCard"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
                 android:id="@+id/tv_class_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="serif"
                 android:text="TSI/02"
                 android:textColor="#ffffff"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/tv_course"
                 app:layout_constraintStart_toStartOf="@+id/tv_course"
@@ -57,13 +66,13 @@
 
             <TextView
                 android:id="@+id/tv_examtype"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="serif"
                 android:text="UTS"
                 android:textColor="#ffffff"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/tv_class_name"
                 app:layout_constraintStart_toStartOf="@+id/tv_class_name"

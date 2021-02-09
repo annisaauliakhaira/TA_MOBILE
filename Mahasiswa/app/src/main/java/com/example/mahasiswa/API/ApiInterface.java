@@ -1,11 +1,14 @@
 package com.example.mahasiswa.API;
 
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface ApiInterface {
     @FormUrlEncoded
@@ -44,5 +47,9 @@ public interface ApiInterface {
 
     @POST("student/details")
     Call<ResponseBody>getDetail(@Header("Authorization") String authToken);
+
+    @Multipart
+    @POST("student/changePicture")
+    Call<ResponseBody>changePicture(@Header("Authorization") String authToken, @Part MultipartBody.Part image);
 
 }

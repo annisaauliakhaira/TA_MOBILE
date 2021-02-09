@@ -1,11 +1,14 @@
 package com.example.pengawas.API;
 
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ApiInterface {
@@ -74,4 +77,8 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("staff/saveLatLong/{id}")
     Call<ResponseBody>saveLatLong(@Header("Authorization") String authToken, @Path("id") String id, @Field("lat")String lat, @Field("lng")String lng);
+
+    @Multipart
+    @POST("staff/changePicture")
+    Call<ResponseBody>changePicture(@Header("Authorization") String authToken, @Part MultipartBody.Part image);
 }

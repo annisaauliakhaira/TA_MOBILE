@@ -51,8 +51,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_name1" />
 
     <GridLayout
-        android:layout_width="298dp"
-        android:layout_height="168dp"
+        android:layout_width="299dp"
+        android:layout_height="307dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,11 +60,11 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_changePassword"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:layout_row="0"
+            android:layout_row="1"
             android:layout_rowWeight="1"
-            android:layout_column="2"
+            android:layout_column="0"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
             android:layout_margin="8dp"
@@ -81,7 +81,6 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginTop="5dp"
                     android:src="@drawable/ic_change" />
 
@@ -95,13 +94,48 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_changeImage"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_rowWeight="1"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/ic_user"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change Image"
+                    android:textAlignment="center"
+                    android:textSize="10dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_examSchedule"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_row="0"
-            android:layout_rowWeight="0"
+            android:layout_rowWeight="1"
             android:layout_column="0"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
@@ -130,6 +164,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
 
     </GridLayout>
 
