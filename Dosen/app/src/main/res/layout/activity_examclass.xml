@@ -131,38 +131,58 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/bt_absen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#d67601"
-            android:drawableStart="@drawable/scan"
-            android:text="Take Presence"
-            android:textColor="#fff"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <Button-->
+<!--            android:id="@+id/bt_absen"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="#d67601"-->
+<!--            android:drawableStart="@drawable/scan"-->
+<!--            android:text="Take Presence"-->
+<!--            android:textColor="#fff"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <Button
-            android:id="@+id/bt_berita"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#1380ae"
-            android:drawableStart="@drawable/ic_news"
-            android:text="News Event"
-            android:textColor="#fff"
-            app:layout_constraintEnd_toStartOf="@+id/iv_geofence"
-            app:layout_constraintStart_toEndOf="@+id/bt_absen"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <Button-->
+<!--            android:id="@+id/bt_berita"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="#1380ae"-->
+<!--            android:drawableStart="@drawable/ic_news"-->
+<!--            android:text="News Event"-->
+<!--            android:textColor="#fff"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/iv_geofence"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/bt_absen"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <ImageButton
-            android:id="@+id/iv_geofence"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:backgroundTint="#2b8b28"
-            android:src="@drawable/ic_geofence"
-            app:layout_constraintStart_toEndOf="@+id/bt_berita"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageButton
+                android:id="@+id/bt_absen"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="#d67601"
+                android:src="@drawable/scan"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/bt_berita"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="#1380ae"
+                android:src="@drawable/ic_news"
+                app:layout_constraintEnd_toStartOf="@+id/iv_geofence"
+                app:layout_constraintStart_toEndOf="@+id/bt_absen"
+                app:layout_constraintTop_toTopOf="parent"  />
 
-</LinearLayout>
+
+            <ImageButton
+                android:id="@+id/iv_geofence"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="#2b8b28"
+                android:src="@drawable/ic_geofence"
+                app:layout_constraintStart_toEndOf="@+id/bt_berita"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>

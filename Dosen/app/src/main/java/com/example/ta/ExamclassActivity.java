@@ -70,8 +70,7 @@ public class ExamclassActivity extends AppCompatActivity {
     private RecyclerView rv_detailclass;
     SessionManager sessionManager;
     private TextView tv_className, tv_classCode, tv_lecturerName, tv_dateDetail, tv_detailTime, tv_roomDetail;
-    Button scan, news_event;
-    ImageButton iv_geofence;
+    ImageButton iv_geofence, scan, news_event, verified;
     String id, token, lat, lng;
     ApiInterface apiInterface;
     private LoadingDialog loadingDialog;
@@ -243,7 +242,6 @@ public class ExamclassActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

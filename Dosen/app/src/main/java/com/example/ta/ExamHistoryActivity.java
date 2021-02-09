@@ -45,8 +45,7 @@ public class ExamHistoryActivity extends AppCompatActivity {
     private TextView tv_courseHistory, tv_examtype, tv_class_name_history, tv_attendanceTime, tv_timeHistory, tv_dateHistory, tv_roomDetail, tv_presenceStatus,
     tv_studentHistory, tv_presenceHistory, tv_permitHistory, tv_absenceHistory;
     private FloatingActionButton fab_download;
-    String id, token, url;
-    ApiInterface apiInterface;
+    String id, token, url, verified_at="";
     private LoadingDialog loadingDialog;
     private ExamHistoryViewModel examHistoryViewModel;
 
@@ -73,7 +72,6 @@ public class ExamHistoryActivity extends AppCompatActivity {
         loadingDialog = new LoadingDialog(this);
         final SwipeRefreshLayout swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.loadHistoryDetail);
 
-
         sessionManager = new SessionManager(this);
         sessionManager.isLogin();
         HashMap<String, String> User = sessionManager.getUserDetail();
@@ -86,7 +84,6 @@ public class ExamHistoryActivity extends AppCompatActivity {
         loadingDialog.startLoadingDialog();
 
         fab_download.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -133,6 +130,7 @@ public class ExamHistoryActivity extends AppCompatActivity {
             tv_presenceHistory.setText("Presence : "+historyDetail.get("hadir"));
             tv_absenceHistory.setText("Absence : "+historyDetail.getString("tidak_hadir"));
             tv_permitHistory.setText("Permit : "+historyDetail.getString("izin"));
+            verified_at = historyDetail.getString("verified_at");
 
             url = ApiClient.BASE_URL+"printDaftarHadir/"+historyDetail.getString("exam_id");
 
@@ -163,27 +161,31 @@ public class ExamHistoryActivity extends AppCompatActivity {
     }
 
     private void downloadFile(String fileName, String url){
-        Uri downloadUri = Uri.parse(url);
-        DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        try {
-            if(manager != null){
-                DownloadManager.Request request = new DownloadManager.Request(downloadUri);
-                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                        .setTitle(fileName+".pdf")
-                        .setDescription("Download File")
-                        .setAllowedOverMetered(true)
-                        .setAllowedOverRoaming(true)
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION)
-                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName+".pdf")
-                        .setMimeType(getMimeType(downloadUri));
-                manager.enqueue(request);
-                Toast.makeText(this, "Download Starter", Toast.LENGTH_SHORT).show();
-            }else{
-                Intent intent = new Intent(Intent.ACTION_VIEW, downloadUri);
-                startActivity(intent);
+        if(verified_at!=""){
+            Uri downloadUri = Uri.parse(url);
+            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            try {
+                if(manager != null){
+                    DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                            .setTitle(fileName+".pdf")
+                            .setDescription("Download File")
+                            .setAllowedOverMetered(true)
+                            .setAllowedOverRoaming(true)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION)
+                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName+".pdf")
+                            .setMimeType(getMimeType(downloadUri));
+                    manager.enqueue(request);
+                    Toast.makeText(this, "Download Starter", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_VIEW, downloadUri);
+                    startActivity(intent);
+                }
+            }catch (Exception e){
+                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             }
-        }catch (Exception e){
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "Data Belum Diverifikasi", Toast.LENGTH_SHORT).show();
         }
     }
 

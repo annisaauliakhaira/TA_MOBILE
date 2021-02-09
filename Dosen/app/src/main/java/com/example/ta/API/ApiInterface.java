@@ -69,6 +69,7 @@ public interface ApiInterface {
     @POST("lecturer/delete/{id}")
     Call<ResponseBody>getDeleteNews(@Header("Authorization") String authToken, @Path("id") String news_id);
 
+
     @FormUrlEncoded
     @POST("lecturer/presence")
     Call<ResponseBody>getPresence(@Header("Authorization") String authToken, @Field("code") String code);
