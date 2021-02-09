@@ -69,8 +69,7 @@ public class ExamclassActivity extends AppCompatActivity {
     private RecyclerView rv_detailclass;
     SessionManager sessionManager;
     private TextView tv_className, tv_classCode, tv_lecturerName, tv_dateDetail, tv_detailTime, tv_roomDetail;
-    Button bt_scan, bt_newsevent;
-    ImageButton iv_geofence;
+    ImageButton iv_geofence, bt_scan, bt_newsevent, bt_verified;
     String id, token, lat, lng;
     ApiInterface apiInterface;
     private LoadingDialog loadingDialog;
@@ -241,8 +240,15 @@ public class ExamclassActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e("Data", "error");
             e.printStackTrace();
-
         }
+
+        bt_verified = findViewById(R.id.iv_verified);
+        bt_verified.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                veriviedData();
+            }
+        });
     }
 
 
@@ -419,6 +425,23 @@ public class ExamclassActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void veriviedData(){
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseBody> presenceCall = apiInterface.updateVerified(token, id);
+        presenceCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(ExamclassActivity.this, "data is verivied", Toast.LENGTH_SHORT).show();
+                studentViewModel.setStudentClass(token, id);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
     public void onPause(){

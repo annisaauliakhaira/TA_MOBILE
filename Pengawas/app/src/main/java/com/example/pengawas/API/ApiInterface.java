@@ -51,6 +51,9 @@ public interface ApiInterface {
     @POST("staff/show/{id}")
     Call<ResponseBody>getNewsEvent(@Header("Authorization") String authToken, @Path("id") String news_id);
 
+    @POST("staff/verified/{id}")
+    Call<ResponseBody>updateVerified(@Header("Authorization") String authToken, @Path("id") String exam_id);
+
     @FormUrlEncoded
     @POST("staff/update/{id}")
     Call<ResponseBody>getUpdateNews(

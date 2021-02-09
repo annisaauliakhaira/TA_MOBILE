@@ -30,13 +30,20 @@ import com.example.ta.API.SessionManager;
 import com.example.ta.Adapter.ExamHistoryAdapter;
 import com.example.ta.ViewModel.ExamHistoryViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ExamHistoryActivity extends AppCompatActivity {
     private static final int WRITE_PERMISSION = 1001;
@@ -45,9 +52,10 @@ public class ExamHistoryActivity extends AppCompatActivity {
     private TextView tv_courseHistory, tv_examtype, tv_class_name_history, tv_attendanceTime, tv_timeHistory, tv_dateHistory, tv_roomDetail, tv_presenceStatus,
     tv_studentHistory, tv_presenceHistory, tv_permitHistory, tv_absenceHistory;
     private FloatingActionButton fab_download;
-    String id, token, url, verified_at="";
+    String id, token, verified_at="";
     private LoadingDialog loadingDialog;
     private ExamHistoryViewModel examHistoryViewModel;
+    ApiInterface apiInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +94,7 @@ public class ExamHistoryActivity extends AppCompatActivity {
         fab_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    if(ContextCompat.checkSelfPermission(ExamHistoryActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-                        downloadFile(id,url);
-                    }else{
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION);
-                    }
-                }else{
-                    downloadFile(id,url);
-                }
+                downloadDaftarHadir();
             }
         });
 
@@ -132,8 +132,6 @@ public class ExamHistoryActivity extends AppCompatActivity {
             tv_permitHistory.setText("Permit : "+historyDetail.getString("izin"));
             verified_at = historyDetail.getString("verified_at");
 
-            url = ApiClient.BASE_URL+"printDaftarHadir/"+historyDetail.getString("exam_id");
-
             examHistoryViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(ExamHistoryViewModel.class);
             examHistoryViewModel.setStudentPresence(token, id);
             examHistoryViewModel.getStudentPresence().observe(this, new Observer<JSONArray>() {
@@ -160,50 +158,40 @@ public class ExamHistoryActivity extends AppCompatActivity {
 
     }
 
-    private void downloadFile(String fileName, String url){
-        if(verified_at!=""){
-            Uri downloadUri = Uri.parse(url);
-            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-            try {
-                if(manager != null){
-                    DownloadManager.Request request = new DownloadManager.Request(downloadUri);
-                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                            .setTitle(fileName+".pdf")
-                            .setDescription("Download File")
-                            .setAllowedOverMetered(true)
-                            .setAllowedOverRoaming(true)
-                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION)
-                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName+".pdf")
-                            .setMimeType(getMimeType(downloadUri));
-                    manager.enqueue(request);
-                    Toast.makeText(this, "Download Starter", Toast.LENGTH_SHORT).show();
-                }else{
-                    Intent intent = new Intent(Intent.ACTION_VIEW, downloadUri);
-                    startActivity(intent);
+    public void downloadDaftarHadir(){
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseBody> saveCall = apiInterface.downloadDaftarHadir(token, id);
+        saveCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.code()==200){
+                    try {
+                        JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                        String hasil = jsonRESULTS.getString("data");
+                        Toast.makeText(ExamHistoryActivity.this, hasil, Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else if(response.code()==409){
+                    try {
+                        JSONObject jsonRESULTS = new JSONObject(response.errorBody().string());
+                        String hasil = jsonRESULTS.getString("data");
+                        Toast.makeText(ExamHistoryActivity.this, hasil, Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }catch (Exception e){
-                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             }
-        }else{
-            Toast.makeText(this, "Data Belum Diverifikasi", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(ExamHistoryActivity.this, "Failed to Download Data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == WRITE_PERMISSION){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                downloadFile(id,url);
-            }else{
-                Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private String getMimeType(Uri uri){
-        ContentResolver resolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(resolver.getType(uri));
-    }
 }

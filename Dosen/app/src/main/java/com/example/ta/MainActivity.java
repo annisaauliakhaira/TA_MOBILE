@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.example.ta.API.ApiClient;
 import com.example.ta.API.ApiInterface;
 import com.example.ta.API.SessionManager;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -147,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = navigationView.getHeaderView(0);
         TextView nav_Name = headerView.findViewById(R.id.tv_nameDosen);
         TextView nav_Nip = headerView.findViewById(R.id.tv_nipDosen);
+        CircleImageView img = headerView.findViewById(R.id.img_dosen);
 
 
         HashMap<String, String> User = sessionManager.getUserDetail();
@@ -163,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         JSONObject headers = jsonRESULTS.getJSONObject("data");
                         nav_Name.setText(headers.getJSONObject("lecturer").getString("name"));
                         nav_Nip.setText("NIP. " +headers.getJSONObject("lecturer").getString("nip"));
+                        if(headers.getJSONObject("user").has("image")){
+                            Glide.with(MainActivity.this).load(headers.getJSONObject("user").getString("image")).into(img);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {

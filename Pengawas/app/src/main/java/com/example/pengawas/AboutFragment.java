@@ -15,10 +15,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.pengawas.API.SessionManager;
 import com.example.pengawas.ViewModel.AboutViewModel;
 
 import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AboutFragment extends Fragment {
     View v;
@@ -27,6 +30,7 @@ public class AboutFragment extends Fragment {
     private TextView tv_name, tv_username;
     private CardView cv_changePass, cv_changeAvatar, cv_examSchedule, cv_examHistory;
     private LoadingDialog loadingDialog;
+    private CircleImageView img;
 
     public AboutFragment() {
     }
@@ -43,6 +47,7 @@ public class AboutFragment extends Fragment {
         super.onViewCreated(v, savedInstanceState);
         tv_name = v.findViewById(R.id.tv_name1);
         tv_username = v.findViewById(R.id.tv_username);
+        img = v.findViewById(R.id.iv_dosenProfile);
 
         sessionManager = new SessionManager(getContext());
         loadingDialog = new LoadingDialog(getActivity());
@@ -60,6 +65,13 @@ public class AboutFragment extends Fragment {
                 if(stringStringHashMap.size() > 0){
                     tv_name.setText(stringStringHashMap.get(aboutViewModel.NAME));
                     tv_username.setText(stringStringHashMap.get(aboutViewModel.USERNAME));
+                    if(!stringStringHashMap.get(aboutViewModel.IMAGE).equals("")){
+                        Glide.with(getContext())
+                                .load(stringStringHashMap
+                                .get(aboutViewModel.IMAGE))
+                                .error(R.drawable.logo_unand)
+                                .into(img);
+                    }
                 }
                 loadingDialog.dismissDialog();
             }
